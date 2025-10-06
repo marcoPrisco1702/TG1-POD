@@ -1,10 +1,10 @@
 import os
 import datetime
-from Streaming.musica import Musica
-from Streaming.podcast import Podcast
-from Streaming.usuario import Usuario
-from Streaming.playlist import Playlist
-from Streaming.analises import Analises
+from Streaming.Musica import Musica
+from Streaming.Podcast import Podcast
+from Streaming.Usuario import Usuario
+from Streaming.Playlist import Playlist
+from Streaming.Analises import Analises
 
 class Menu:
     def __init__(self):
