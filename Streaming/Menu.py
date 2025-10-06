@@ -222,7 +222,7 @@ class Menu:
                     try:
                         nota = int(input(f"Qual sua nota para '{midia.titulo}' (0-5)? "))
                         if not midia.avaliar(nota):
-                            print("Nota inválida. Deve ser entre 0 e 5.")
+                            print("Nota inálida. Deve ser entre 0 e 5.")
                             log_erro(f"Tentativa de avaliação inválida ({nota}) para '{midia.titulo}'.")
                         else:
                             print("Avaliação registrada!")
