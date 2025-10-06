@@ -149,7 +149,92 @@ class Menu:
                     except ValueError:
                         log_erro(f"Formato inválido para playlist: '{linha}'")
 
+        
+
+    def menu_usuario(usuario: Usuario):
+        """Exibe e gerencia o menu do usuário logado."""
+        while True:
+            print(f"\n--- Menu de {usuario.nome} ---")
+            print("1. Reproduzir uma mídia")
+            print("2. Listar mídias")
+            print("3. Criar nova playlist")
+            print("4. Ver minhas playlists")
+            print("5. Reproduzir uma playlist")
+            print("6. Avaliar uma música")
+            print("7. Sair (Voltar ao menu principal)")
             
+            escolha = input("Escolha uma opção: ")
+
+            if escolha == "1":
+                titulo = input("Digite o título da mídia: ")
+                midia = encontrar_midia(titulo)
+                if midia:
+                    usuario.ouvir_midia(midia)
+                else:
+                    print("Mídia não encontrada.")
+
+            elif escolha == "2":
+                print("\n--- Todas as Mídias ---")
+                for midia in midias:
+                    print(f"- {midia}")
+                
+            elif escolha == "3":
+                nome_playlist = input("Digite o nome da nova playlist: ")
+                if any(p.nome.lower() == nome_playlist.lower() for p in usuario.playlists):
+                    print("Você já possui uma playlist com esse nome.")
+                else:
+                    playlist = usuario.criar_playlist(nome_playlist)
+                    while True:
+                        titulo_midia = input("Adicione uma mídia (ou 'fim' para terminar): ")
+                        if titulo_midia.lower() == 'fim':
+                            break
+                        midia = encontrar_midia(titulo_midia)
+                        if midia:
+                            playlist.adicionar_midia(midia)
+                        else:
+                            print("Mídia não encontrada.")
+                    print(f"Playlist '{nome_playlist}' criada!")
+            
+            elif escolha == "4":
+                print(f"\n--- Playlists de {usuario.nome} ---")
+                if not usuario.playlists:
+                    print("Você ainda não tem playlists.")
+                for p in usuario.playlists:
+                    print(f"- {p}")
+
+            elif escolha == "5":
+                nome_playlist = input("Digite o nome da playlist para reproduzir: ")
+                playlist_encontrada = None
+                for p in usuario.playlists:
+                    if p.nome.lower() == nome_playlist.lower():
+                        playlist_encontrada = p
+                        break
+                if playlist_encontrada:
+                    playlist_encontrada.reproduzir()
+                else:
+                    print("Playlist não encontrada.")
+
+            elif escolha == "6":
+                titulo = input("Digite o título da música para avaliar: ")
+                midia = encontrar_midia(titulo)
+                if midia and isinstance(midia, Musica):
+                    try:
+                        nota = int(input(f"Qual sua nota para '{midia.titulo}' (0-5)? "))
+                        if not midia.avaliar(nota):
+                            print("Nota inválida. Deve ser entre 0 e 5.")
+                            log_erro(f"Tentativa de avaliação inválida ({nota}) para '{midia.titulo}'.")
+                        else:
+                            print("Avaliação registrada!")
+                    except ValueError:
+                        print("Por favor, insira um número.")
+                else:
+                    print("Música não encontrada.")
+
+            elif escolha == "7":
+                print("Saindo do perfil...")
+                break
+            else:
+                print("Opção inválida.")        
 
 
 
