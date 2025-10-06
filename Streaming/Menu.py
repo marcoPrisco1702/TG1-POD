@@ -18,19 +18,19 @@ class Menu:
         self.setup_folders()
         self.carregar_dados()
 
-    def setup_folders():
+    def setup_folders(self):
         """Cria as pastas de log, relatório e configuração se não existirem."""
         os.makedirs(LOG_FOLDER, exist_ok=True)
         os.makedirs(REPORT_FOLDER, exist_ok=True)
         os.makedirs(CONFIG_FOLDER, exist_ok=True)
 
-    def log_erro(mensagem: str):
+    def log_erro(self,mensagem: str):
         """Registra uma mensagem de erro no arquivo de log."""
         now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         with open(os.path.join(LOG_FOLDER, "erros.log"), "a", encoding="utf-8") as f:
             f.write(f"[{now}] ERRO: {mensagem}\n")
 
-    def gerar_relatorio():
+    def gerar_relatorio(self):
         """Gera e salva o relatório de estatísticas do sistema."""
         print("\nGerando relatório...")
         
@@ -80,20 +80,20 @@ class Menu:
         print(f"Relatório salvo em: {report_path}")
 
     # --- Funções Auxiliares ---
-    def encontrar_usuario(nome):
+    def encontrar_usuario(self,nome):
         for u in usuarios:
             if u.nome.lower() == nome.lower():
                 return u
         return None
 
-    def encontrar_midia(titulo):
+    def encontrar_midia(self,titulo):
         for m in midias:
             if m.titulo.lower() == titulo.lower():
                 return m
         return None
 
 
-    def carregar_dados():
+    def carregar_dados(self,):
         """Carrega usuários, mídias e playlists do arquivo de configuração."""
         config_path = os.path.join(CONFIG_FOLDER, "dados.md")
         if not os.path.exists(config_path):
@@ -151,7 +151,7 @@ class Menu:
 
         
 
-    def menu_usuario(usuario: Usuario):
+    def menu_usuario(self,usuario: Usuario):
         """Exibe e gerencia o menu do usuário logado."""
         while True:
             print(f"\n--- Menu de {usuario.nome} ---")
