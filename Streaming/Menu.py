@@ -93,8 +93,63 @@ class Menu:
         return None
 
 
+    def carregar_dados():
+        """Carrega usuários, mídias e playlists do arquivo de configuração."""
+        config_path = os.path.join(CONFIG_FOLDER, "dados.md")
+        if not os.path.exists(config_path):
+            print("Arquivo de configuração não encontrado. Iniciando com dados vazios.")
+            return
 
-        
+        with open(config_path, "r", encoding="utf-8") as f:
+            modo = None
+            for linha in f:
+                linha = linha.strip()
+                if not linha or linha.startswith("<!--"):
+                    continue
+                
+                if linha.startswith("## "):
+                    modo = linha.replace("## ", "").strip().lower()
+                    continue
+                
+                if modo == "usuarios":
+                    if encontrar_usuario(linha):
+                        log_erro(f"Usuário duplicado no arquivo de config: '{linha}'")
+                    else:
+                        usuarios.append(Usuario(linha))
+
+                elif modo == "musicas":
+                    try:
+                        titulo, artista, duracao, genero = [x.strip() for x in linha.split(",")]
+                        midias.append(Musica(titulo, int(duracao), artista, genero))
+                    except ValueError:
+                        log_erro(f"Formato inválido para música: '{linha}'")
+                
+                elif modo == "podcasts":
+                    try:
+                        titulo, artista, duracao, host, temporada, episodio = [x.strip() for x in linha.split(",")]
+                        midias.append(Podcast(titulo, int(duracao), artista, int(episodio), temporada, host))
+                    except ValueError:
+                        log_erro(f"Formato inválido para podcast: '{linha}'")
+
+                elif modo == "playlists":
+                    try:
+                        nome_usuario, nome_playlist, titulos_midias = [x.strip() for x in linha.split(":")]
+                        usuario = encontrar_usuario(nome_usuario)
+                        if not usuario:
+                            log_erro(f"Usuário '{nome_usuario}' da playlist '{nome_playlist}' não encontrado.")
+                            continue
+                        
+                        playlist = usuario.criar_playlist(nome_playlist)
+                        for titulo_midia in titulos_midias.split(","):
+                            midia = encontrar_midia(titulo_midia.strip())
+                            if midia:
+                                playlist.adicionar_midia(midia)
+                            else:
+                                log_erro(f"Mídia '{titulo_midia.strip()}' da playlist '{nome_playlist}' não encontrada.")
+                    except ValueError:
+                        log_erro(f"Formato inválido para playlist: '{linha}'")
+
+            
 
 
 
