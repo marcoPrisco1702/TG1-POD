@@ -20,33 +20,33 @@ class Menu:
 
     def setup_folders(self):
         """Cria as pastas de log, relatório e configuração se não existirem."""
-        os.makedirs(LOG_FOLDER, exist_ok=True)
-        os.makedirs(REPORT_FOLDER, exist_ok=True)
-        os.makedirs(CONFIG_FOLDER, exist_ok=True)
+        os.makedirs(self.LOG_FOLDER, exist_ok=True)
+        os.makedirs(self.REPORT_FOLDER, exist_ok=True)
+        os.makedirs(self.CONFIG_FOLDER, exist_ok=True)
 
     def log_erro(self,mensagem: str):
         """Registra uma mensagem de erro no arquivo de log."""
         now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        with open(os.path.join(LOG_FOLDER, "erros.log"), "a", encoding="utf-8") as f:
+        with open(os.path.join(self.LOG_FOLDER, "erros.log"), "a", encoding="utf-8") as f:
             f.write(f"[{now}] ERRO: {mensagem}\n")
 
     def gerar_relatorio(self):
         """Gera e salva o relatório de estatísticas do sistema."""
         print("\nGerando relatório...")
         
-        all_musicas = [m for m in midias if isinstance(m, Musica)]
+        all_musicas = [m for m in self.midias if isinstance(m, Musica)]
         all_playlists = []
-        for u in usuarios:
+        for u in self.usuarios:
             all_playlists.extend(u.playlists)
 
         top_5_musicas = Analises.top_musicas_reproduzidas(all_musicas, 5)
         playlist_popular = Analises.playlist_mais_popular(all_playlists)
-        user_ativo = Analises.usuario_mais_ativo(usuarios)
+        user_ativo = Analises.usuario_mais_ativo(self.usuarios)
         medias_musicas = Analises.media_avaliacoes(all_musicas)
-        total_reps = Analises.total_reproducoes(usuarios)
+        total_reps = Analises.total_reproducoes(self.usuarios)
         
         now = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        report_path = os.path.join(REPORT_FOLDER, f"relatorio_{now}.txt")
+        report_path = os.path.join(self.REPORT_FOLDER, f"relatorio_{now}.txt")
 
         with open(report_path, "w", encoding="utf-8") as f:
             f.write("--- Relatório de Estatísticas do Streaming ---\n")
@@ -81,13 +81,13 @@ class Menu:
 
     # --- Funções Auxiliares ---
     def encontrar_usuario(self,nome):
-        for u in usuarios:
+        for u in self.usuarios:
             if u.nome.lower() == nome.lower():
                 return u
         return None
 
     def encontrar_midia(self,titulo):
-        for m in midias:
+        for m in self.midias:
             if m.titulo.lower() == titulo.lower():
                 return m
         return None
@@ -95,6 +95,7 @@ class Menu:
 
     def carregar_dados(self,):
         """Carrega usuários, mídias e playlists do arquivo de configuração."""
+        CONFIG_FOLDER = "caminho/para/config"  # Defina o caminho correto para a pasta de configuração
         config_path = os.path.join(CONFIG_FOLDER, "dados.md")
         if not os.path.exists(config_path):
             print("Arquivo de configuração não encontrado. Iniciando com dados vazios.")
@@ -112,8 +113,8 @@ class Menu:
                     continue
                 
                 if modo == "usuarios":
-                    if encontrar_usuario(linha):
-                        log_erro(f"Usuário duplicado no arquivo de config: '{linha}'")
+                    if self.encontrar_usuario(linha):
+                        erros.log(f"Usuário duplicado no arquivo de config: '{linha}'")
                     else:
                         usuarios.append(Usuario(linha))
 
