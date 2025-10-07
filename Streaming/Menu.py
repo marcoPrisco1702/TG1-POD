@@ -6,6 +6,7 @@ from Streaming.Usuario import Usuario
 from Streaming.Playlist import Playlist
 from Streaming.Analises import Analises
 
+#classe menu pra gerenciar o sistema
 class Menu:
     def __init__(self):
         self.usuarios = []
