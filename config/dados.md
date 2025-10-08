@@ -49,7 +49,7 @@
 ## Playlists  
 # Formato: nome_da_playlist | usuario_dono | titulos_de_midias_separados_por_ponto_e_virgula
 - Rock Classico | Marco | Thunderstruck; One; Back In Black; Bohemian Rhapsody; Stairway to Heaven; Hotel California
-- Mix Pop | Ana | Billie Jean; Shape of You; Blinding Lights; Uptown Funk; Imagine
+- Mix Pop | Ruanan | Billie Jean; Shape of You; Blinding Lights; Uptown Funk; Imagine
 - Metal Pesado | Carlos | One; Enter Sandman; Back In Black
 - Hits 90s | Beatriz | Smells Like Teen Spirit; Wonderwall; Dancing Queen; Hey Jude
 - Treino | Gustavo | Lose Yourself; Blinding Lights; Uptown Funk; Despacito

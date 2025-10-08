@@ -21,7 +21,7 @@ class Podcast(ArquivoDeMidia):
 
     def reproduzir(self):
         self.reproducoes += 1
-        print(f"Reproduzindo Podcast: {self.titulo} — {self.artista} " f"({self._fmt_duracao()})")
+        print(f"Reproduzindo Podcast: {self.titulo} — {self.artista} ")
         print(f"Temporada: {self.temporada} | Episódio: {self.episodio} | Host: {self.host}")
 
     
