@@ -1,6 +1,9 @@
+from __future__ import annotations
 from typing import List, TYPE_CHECKING
-from .Playlist import Playlist
 from .ArquivoDeMidia import ArquivoDeMidia
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .Playlist import Playlist
 
 class Usuario:
     qntd_instancias = 0

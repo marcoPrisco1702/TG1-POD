@@ -1,9 +1,12 @@
+from __future__ import annotations
 from typing import List
 from .ArquivoDeMidia import ArquivoDeMidia
-from .Usuario import Usuario
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .Usuario import Usuario
 
 class Playlist:
-    def __init__(self, nome: str, usuario: Usuario):
+    def __init__(self, nome: str, usuario: 'Usuario'):
         self.nome = nome
         self.usuario = usuario
         self.itens: List[ArquivoDeMidia] = []
