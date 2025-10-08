@@ -2,7 +2,7 @@
 Trabalho em grupo 1 de Programacao Orientada a Dados
 
 
-Ordem pra fazer as classes pelo gpt só pra termos uma ideia:
+Ordem pra fazer as classes feito pelo gpt só pra termos uma ideia:
 
 1.	Fundação (modelos base)
 

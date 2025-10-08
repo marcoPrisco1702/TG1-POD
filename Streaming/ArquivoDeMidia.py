@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 class ArquivoDeMidia(ABC):
     # classe abstrata que representa um arquivo de mídia genérico
     def __init__(self, titulo: str, duracao: int, artista: str):
-        #checagens basicas pra validacao dos atributos
+        #checagens pra validacao dos atributos
         if not isinstance(duracao, int) or duracao < 0:
             raise ValueError("duracao deve ser um inteiro >= 0")
         if not titulo or not titulo.strip():
