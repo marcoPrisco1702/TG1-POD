@@ -80,7 +80,6 @@ class Menu:
 
         print(f"Relatório salvo em: {report_path}")
 
-    # --- Funções Auxiliares ---
     def encontrar_usuario(self,nome):
         for u in self.usuarios:
             if u.nome.lower() == nome.lower():
@@ -96,62 +95,64 @@ class Menu:
 
     def carregar_dados(self,):
         """Carrega usuários, mídias e playlists do arquivo de configuração."""
-        CONFIG_FOLDER = "caminho/para/config"  # Defina o caminho correto para a pasta de configuração
-        config_path = os.path.join(CONFIG_FOLDER, "dados.md")
+        config_path = os.path.join(self.CONFIG_FOLDER, "dados.md")
         if not os.path.exists(config_path):
             print("Arquivo de configuração não encontrado. Iniciando com dados vazios.")
             return
 
-        with open(config_path, "r", encoding="utf-8") as f:
-            modo = None
-            for linha in f:
-                linha = linha.strip()
-                if not linha or linha.startswith("<!--"):
-                    continue
-                
-                if linha.startswith("## "):
-                    modo = linha.replace("## ", "").strip().lower()
-                    continue
-                
-                if modo == "usuarios":
-                    if self.encontrar_usuario(linha):
-                        erros.log(f"Usuário duplicado no arquivo de config: '{linha}'")
-                    else:
-                        usuarios.append(Usuario(linha))
+        try:
+            with open(config_path, "r", encoding="utf-8") as f:
+                modo = None
+                for linha in f:
+                    linha = linha.strip()
+                    if not linha or linha.startswith("<!--"):
+                        continue
+                    
+                    if linha.startswith("## "):
+                        modo = linha.replace("## ", "").strip().lower()
+                        continue
+                    
+                    if modo == "usuarios":
+                        if self.encontrar_usuario(linha):
+                            self.log_erro(f"Usuário duplicado no arquivo de config: '{linha}'")
+                        else:
+                            self.usuarios.append(Usuario(linha))
 
-                elif modo == "musicas":
-                    try:
-                        titulo, artista, duracao, genero = [x.strip() for x in linha.split(",")]
-                        midias.append(Musica(titulo, int(duracao), artista, genero))
-                    except ValueError:
-                        log_erro(f"Formato inválido para música: '{linha}'")
-                
-                elif modo == "podcasts":
-                    try:
-                        titulo, artista, duracao, host, temporada, episodio = [x.strip() for x in linha.split(",")]
-                        midias.append(Podcast(titulo, int(duracao), artista, int(episodio), temporada, host))
-                    except ValueError:
-                        log_erro(f"Formato inválido para podcast: '{linha}'")
+                    elif modo == "musicas":
+                        try:
+                            titulo, artista, duracao, genero = [x.strip() for x in linha.split(",")]
+                            self.midias.append(Musica(titulo, int(duracao), artista, genero))
+                        except ValueError:
+                            self.log_erro(f"Formato inválido para música: '{linha}'")
+                    
+                    elif modo == "podcasts":
+                        try:
+                            titulo, artista, duracao, host, temporada, episodio = [x.strip() for x in linha.split(",")]
+                            self.midias.append(Podcast(titulo, int(duracao), artista, int(episodio), temporada, host))
+                        except ValueError:
+                            self.log_erro(f"Formato inválido para podcast: '{linha}'")
 
-                elif modo == "playlists":
-                    try:
-                        nome_usuario, nome_playlist, titulos_midias = [x.strip() for x in linha.split(":")]
-                        usuario = encontrar_usuario(nome_usuario)
-                        if not usuario:
-                            log_erro(f"Usuário '{nome_usuario}' da playlist '{nome_playlist}' não encontrado.")
-                            continue
-                        
-                        playlist = usuario.criar_playlist(nome_playlist)
-                        for titulo_midia in titulos_midias.split(","):
-                            midia = encontrar_midia(titulo_midia.strip())
-                            if midia:
-                                playlist.adicionar_midia(midia)
-                            else:
-                                log_erro(f"Mídia '{titulo_midia.strip()}' da playlist '{nome_playlist}' não encontrada.")
-                    except ValueError:
-                        log_erro(f"Formato inválido para playlist: '{linha}'")
+                    elif modo == "playlists":
+                        try:
+                            nome_usuario, nome_playlist, titulos_midias = [x.strip() for x in linha.split(":")]
+                            usuario = self.encontrar_usuario(nome_usuario)
+                            if not usuario:
+                                self.log_erro(f"Usuário '{nome_usuario}' da playlist '{nome_playlist}' não encontrado.")
+                                continue
+                            
+                            playlist = usuario.criar_playlist(nome_playlist)
+                            for titulo_midia in titulos_midias.split(","):
+                                midia = self.encontrar_midia(titulo_midia.strip())
+                                if midia:
+                                    playlist.adicionar_midia(midia)
+                                else:
+                                    self.log_erro(f"Mídia '{titulo_midia.strip()}' da playlist '{nome_playlist}' não encontrada.")
+                        except ValueError:
+                            self.log_erro(f"Formato inválido para playlist: '{linha}'")
+        except Exception as e:
+            self.log_erro(f"Falha ao ler config '{config_path}': {e}")
+            return
 
-        
 
     def menu_usuario(self,usuario: Usuario):
         """Exibe e gerencia o menu do usuário logado."""
@@ -169,7 +170,7 @@ class Menu:
 
             if escolha == "1":
                 titulo = input("Digite o título da mídia: ")
-                midia = encontrar_midia(titulo)
+                midia = self.encontrar_midia(titulo)
                 if midia:
                     usuario.ouvir_midia(midia)
                 else:
@@ -177,7 +178,7 @@ class Menu:
 
             elif escolha == "2":
                 print("\n--- Todas as Mídias ---")
-                for midia in midias:
+                for midia in self.midias:
                     print(f"- {midia}")
                 
             elif escolha == "3":
@@ -190,7 +191,7 @@ class Menu:
                         titulo_midia = input("Adicione uma mídia (ou 'fim' para terminar): ")
                         if titulo_midia.lower() == 'fim':
                             break
-                        midia = encontrar_midia(titulo_midia)
+                        midia = self.encontrar_midia(titulo_midia)
                         if midia:
                             playlist.adicionar_midia(midia)
                         else:
@@ -218,13 +219,13 @@ class Menu:
 
             elif escolha == "6":
                 titulo = input("Digite o título da música para avaliar: ")
-                midia = encontrar_midia(titulo)
+                midia = self.encontrar_midia(titulo)
                 if midia and isinstance(midia, Musica):
                     try:
                         nota = int(input(f"Qual sua nota para '{midia.titulo}' (0-5)? "))
                         if not midia.avaliar(nota):
-                            print("Nota inálida. Deve ser entre 0 e 5.")
-                            log_erro(f"Tentativa de avaliação inválida ({nota}) para '{midia.titulo}'.")
+                            print("Nota inválida. Deve ser entre 0 e 5.")
+                            self.log_erro(f"Tentativa de avaliação inválida ({nota}) para '{midia.titulo}'.")
                         else:
                             print("Avaliação registrada!")
                     except ValueError:
