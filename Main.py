@@ -1,19 +1,20 @@
 from Streaming.Menu import Menu
-
 def main():
     print("=== SISTEMA DE STREAMING ===\n")
-    menu = Menu()
-    print("carregando dados...")
+    print("[debug] inicializando menu...")
 
-    # Carrega dados iniciais (se tiver)
+    menu = Menu()
+    print("[debug] menu criado; carregando dados...")
+
+    
     try:
         menu.carregar_dados()
     except Exception as e:
         menu.log_erro(f"Erro ao carregar dados iniciais: {e}")
         print("Falha ao carregar dados iniciais. Veja logs/erros.log.")
 
-    print("dados carregados; entrando no menu...")
-    # Inicia o menu interativo
+    print("[debug] dados carregados; entrando no menu...")
+    
     try:
         menu.menu_principal()
     except KeyboardInterrupt:

@@ -152,6 +152,43 @@ class Menu:
         except Exception as e:
             self.log_erro(f"Falha ao ler config '{config_path}': {e}")
             return
+        
+    def menu_principal(self):
+        while True:
+            print("\n=== MENU PRINCIPAL ===")
+            print("1. Entrar como usuário existente")
+            print("2. Criar novo usuário")
+            print("3. Gerar relatório")
+            print("4. Sair")
+
+            escolha = input("Escolha uma opção: ")
+
+            if escolha == "1":
+                nome = input("Digite o nome do usuário: ")
+                usuario = self.encontrar_usuario(nome)
+                if usuario:
+                    self.menu_usuario(usuario)
+                else:
+                    print("Usuário não encontrado.")
+
+            elif escolha == "2":
+                nome = input("Digite o nome do novo usuário: ")
+                if self.encontrar_usuario(nome):
+                    print("Usuário já existe.")
+                else:
+                    novo_usuario = Usuario(nome)
+                    self.usuarios.append(novo_usuario)
+                    print(f"Usuário '{nome}' criado com sucesso!")
+
+            elif escolha == "3":
+                self.gerar_relatorio()
+
+            elif escolha == "4":
+                print("Saindo do sistema...")
+                break
+
+            else:
+                print("Opção inválida. Tente novamente.")
 
 
     def menu_usuario(self,usuario: Usuario):
