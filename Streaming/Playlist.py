@@ -1,6 +1,6 @@
 from typing import List
-from .arquivo_de_midia import ArquivoDeMidia
-from .usuario import Usuario
+from .ArquivoDeMidia import ArquivoDeMidia
+from .Usuario import Usuario
 
 class Playlist:
     """
