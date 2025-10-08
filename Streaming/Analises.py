@@ -11,37 +11,37 @@ class Analises:
     def top_musicas_reproduzidas(musicas: List[Musica], top_n: int) -> List[Musica]:
         if not musicas or top_n <= 0:
             return []
-        ordenadas = sorted(musicas, key=lambda m: m.reproducoes, reverse=True)
+        ordenadas = sorted(musicas, reverse=True, key=lambda musica: musica.reproducoes) # ordena musicas por reproducoes descrescente
         return ordenadas[:top_n]
 
     @staticmethod
-    def playlist_mais_popular(playlists: List[Playlist]) -> Optional[Playlist]:
+    def playlist_mais_popular(playlists: List[Playlist]):
         if not playlists:
             return None
-        return max(playlists, key=lambda p: p.reproducoes)
+        return max(playlists, key=lambda playlist: playlist.reproducoes)
 
     @staticmethod
-    def usuario_mais_ativo(usuarios: List[Usuario]) -> Optional[Usuario]:
+    def usuario_mais_ativo(usuarios: List[Usuario]):
         if not usuarios:
             return None
-        return max(usuarios, key=lambda u: len(u.historico))
+        return max(usuarios, key=lambda usuario: len(usuario.historico)) # usuario com mais midias ouvidas
 
     @staticmethod
     def media_avaliacoes(musicas: List[Musica]) -> Dict[str, float]:
         medias: Dict[str, float] = {}
-        for m in musicas or []:
-            if getattr(m, "avaliacoes", None):
-                medias[m.titulo] = sum(m.avaliacoes) / len(m.avaliacoes)
+        for musica in musicas or []:
+            if getattr(musica, "avaliacoes", None):
+                medias[musica.titulo] = sum(musica.avaliacoes) / len(musica.avaliacoes)
         return medias
 
     @staticmethod
-    def total_reproducoes(usuarios: List[Usuario]) -> int:
+    def total_reproducoes(usuarios: List[Usuario]):
         if not usuarios:
             return 0
         return sum(len(u.historico) for u in usuarios)
 
     @staticmethod
-    def gerar_relatorio(usuarios: List[Usuario],playlists: List[Playlist],musicas: List[Musica],caminho_pasta_relat: str = os.path.join("relatorios"),nome_arquivo: str = "relatorio.txt",top_n: int = 5,) -> str:
+    def gerar_relatorio(usuarios: List[Usuario],playlists: List[Playlist],musicas: List[Musica],caminho_pasta_relat: str = os.path.join("relatorios"),nome_arquivo: str = "relatorio.txt",top_n: int = 5,):
         os.makedirs(caminho_pasta_relat, exist_ok=True)
         destino = os.path.join(caminho_pasta_relat, nome_arquivo)
 
@@ -55,7 +55,7 @@ class Analises:
         
         linhas: List[str] = []
         linhas.append("=" * 70)
-        linhas.append(f"RELATÓRIO DO SISTEMA DE STREAMING — {datetime.now():%Y-%m-%d %H:%M:%S}")
+        linhas.append(f"RELATÓRIO DO SISTEMA DE STREAMING — {datetime.now():%Y-%m-%d %H:%M:%S}") # a data e hora atuais
         linhas.append("=" * 70)
         linhas.append("")
 
