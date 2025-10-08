@@ -1,17 +1,8 @@
 from typing import List, TYPE_CHECKING
-
 from .Playlist import Playlist
 from .ArquivoDeMidia import ArquivoDeMidia
 
 class Usuario:
-    """
-    Representa um usuário do sistema de streaming.
-
-    Attributes:
-        nome (str): O nome do usuário.
-        playlists (list[Playlist]): Lista de playlists criadas pelo usuário.
-        historico (list[ArquivoDeMidia]): Histórico de mídias ouvidas pelo usuário.
-    """
     qntd_instancias = 0
 
     def __init__(self, nome: str):

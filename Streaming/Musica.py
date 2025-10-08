@@ -8,6 +8,7 @@ class Musica(ArquivoDeMidia):
 
     def reproduzir(self):
         super().reproduzir()
+        print(f"Duração: {self._fmt_duracao()} min")
         print(f"Gênero: {self.genero}")
 
     def avaliar(self, nota: int):

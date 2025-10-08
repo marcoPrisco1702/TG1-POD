@@ -3,15 +3,6 @@ from .ArquivoDeMidia import ArquivoDeMidia
 from .Usuario import Usuario
 
 class Playlist:
-    """
-    Representa uma playlist de mídias de um usuário.
-
-    Attributes:
-        nome (str): O nome da playlist.
-        usuario (Usuario): O usuário criador da playlist.
-        itens (list[ArquivoDeMidia]): A lista de mídias na playlist.
-        reproducoes (int): O número de vezes que a playlist foi reproduzida.
-    """
     def __init__(self, nome: str, usuario: Usuario):
         self.nome = nome
         self.usuario = usuario

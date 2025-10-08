@@ -31,3 +31,8 @@ class ArquivoDeMidia(ABC):
 
     def __repr__(self):
         return f"{self.__class__.__name__}(titulo='{self.titulo}', artista='{self.artista}', duracao={self.duracao} s)"
+
+    def _fmt_duracao(self):
+        minutos = self.duracao // 60
+        segundos = self.duracao % 60
+        return f"{minutos}:{segundos:02d}"

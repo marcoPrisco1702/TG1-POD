@@ -1,7 +1,4 @@
-
-
 from __future__ import annotations
-
 from .ArquivoDeMidia import ArquivoDeMidia
 
 
@@ -27,9 +24,7 @@ class Podcast(ArquivoDeMidia):
         print(f"Reproduzindo Podcast: {self.titulo} — {self.artista} " f"({self._fmt_duracao()})")
         print(f"Temporada: {self.temporada} | Episódio: {self.episodio} | Host: {self.host}")
 
-    def _fmt_duracao(self):
-        m, s = divmod(self.duracao, 60)
-        return f"{m}:{s:02d}"
+    
     
     def __str__(self):
         return (f"Podcast('{self.titulo}' — {self.artista}, T{self.temporada}E{self.episodio}, "
