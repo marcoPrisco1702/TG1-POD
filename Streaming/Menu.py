@@ -358,8 +358,9 @@ class Menu:
             print("3. Criar nova playlist")
             print("4. Ver minhas playlists")
             print("5. Reproduzir uma playlist")
-            print("6. Avaliar uma música")
-            print("7. Sair (Voltar ao menu principal)")
+            print("6. Adicionar mídia a uma playlist")
+            print("7. Avaliar uma música")
+            print("8. Sair (Voltar ao menu principal)")
             
             escolha = input("Escolha uma opção: ")
 
@@ -416,6 +417,24 @@ class Menu:
                     print("Playlist não encontrada.")
 
             elif escolha == "6":
+                nome_playlist = input("Digite o nome da playlist para adicionar mídia: ")
+                playlist_encontrada = None
+                for p in usuario.playlists:
+                    if p.nome.lower() == nome_playlist.lower():
+                        playlist_encontrada = p
+                        break
+                if not playlist_encontrada:
+                    print("Playlist não encontrada.")
+                    continue
+                titulo_midia = input("Digite o título da mídia para adicionar: ")
+                midia = self.encontrar_midia(titulo_midia)
+                if not midia:
+                    print("Mídia não encontrada.")
+                    continue
+                playlist_encontrada.adicionar_midia(midia)
+                self.salvar_dados()
+
+            elif escolha == "7":
                 titulo = input("Digite o título da música para avaliar: ")
                 midia = self.encontrar_midia(titulo)
                 if midia and isinstance(midia, Musica):
@@ -431,7 +450,7 @@ class Menu:
                 else:
                     print("Música não encontrada.")
 
-            elif escolha == "7":
+            elif escolha == "8":
                 print("Saindo do perfil...")
                 self.salvar_dados()
                 break

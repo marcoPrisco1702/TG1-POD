@@ -18,7 +18,7 @@
 
 ## Musicas
 # Formato: titulo | artista | duracao_em_segundos | genero | reproducoes
-- Thunderstruck | AC/DC | 292 | Rock | 1
+- Thunderstruck | AC/DC | 292 | Rock | 2
 - One | Metallica | 446 | Metal | 0
 - Billie Jean | Michael Jackson | 294 | Pop | 0
 - Smells Like Teen Spirit | Nirvana | 301 | Grunge | 0
@@ -34,7 +34,7 @@
 - Uptown Funk | Mark Ronson ft. Bruno Mars | 270 | Funk | 0
 - Dancing Queen | ABBA | 230 | Disco | 0
 - Wonderwall | Oasis | 258 | Britpop | 0
-- Enter Sandman | Metallica | 331 | Metal | 2
+- Enter Sandman | Metallica | 331 | Metal | 3
 - Back In Black | AC/DC | 255 | Rock | 0
 - Imagine | John Lennon | 187 | Pop | 0
 - Hey Jude | The Beatles | 431 | Rock | 0
@@ -56,5 +56,5 @@
 - Papo de Tecnologia | Eduardo | TechTalk; Ciência Hoje | 0
 - Treino | Gustavo | Lose Yourself; Blinding Lights; Uptown Funk; Despacito | 0
 - Estudo & Foco | Helena | História em Pauta; Saúde em Dia; Imagine | 0
-- Metal | Marcos | Enter Sandman | 2
+- Metal | Marcos | Enter Sandman; Thunderstruck | 3
 
