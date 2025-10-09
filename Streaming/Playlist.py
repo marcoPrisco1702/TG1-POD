@@ -32,25 +32,34 @@ class Playlist:
             print("Playlist está vazia.")
             return
 
-        for item in self.itens:
-            self.usuario.ouvir_midia(item)
-        self.reproducoes += 1
-        print(f"--- Fim da playlist: {self.nome} ---")
+        indice = 0
+        total = len(self.itens)
+        while 0 <= indice < total:
+            midia = self.itens[indice]
+            finalizou, acao = self.usuario.ouvir_midia(midia, mostrar_opcao_voltar=True)
+            if not finalizou:
+                if acao == "0" or acao is None:
+                    print(f"--- Reprodução interrompida na playlist: {self.nome} ---")
+                    return
+                if acao == "1":
+                    if indice < total - 1:
+                        indice += 1
+                        continue
+                    print("Fim da playlist.")
+                    indice = total
+                    break
+                if acao == "2":
+                    if indice > 0:
+                        indice -= 1
+                        continue
+                    print("Essa já é a primeira mídia da playlist.")
+                    return
+            else:
+                indice += 1
 
-    def reproduzir_a_partir(self, indice_inicial: int):
-        if not self.itens:
-            print("Playlist está vazia.")
-            return False
-        if indice_inicial < 0 or indice_inicial >= len(self.itens):
-            print("Índice inválido para reprodução.")
-            return False
-
-        print(f"\n--- Reproduzindo playlist: {self.nome} (a partir de {self.itens[indice_inicial].titulo}) ---")
-        for item in self.itens[indice_inicial:]:
-            self.usuario.ouvir_midia(item)
-        self.reproducoes += 1
-        print(f"--- Fim da playlist: {self.nome} ---")
-        return True
+        if indice >= total:
+            self.reproducoes += 1
+            print(f"--- Fim da playlist: {self.nome} ---")
 
     def __add__(self, other):
         if not isinstance(other, Playlist):

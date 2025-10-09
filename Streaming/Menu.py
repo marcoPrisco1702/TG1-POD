@@ -1,5 +1,6 @@
 import os
 import datetime
+from typing import Optional, Set
 from Streaming.Musica import Musica
 from Streaming.Podcast import Podcast
 from Streaming.Usuario import Usuario
@@ -386,6 +387,96 @@ class Menu:
             else:
                 print("Opção inválida.")
 
+    def _solicitar_acao(self, mensagem: str, opcoes: Set[str], padrao: Optional[str] = None) -> str:
+        while True:
+            escolha = input(mensagem).strip()
+            if not escolha and padrao is not None:
+                return padrao
+            if escolha in opcoes:
+                return escolha
+            print("Opção inválida.")
+
+    def _reproduzir_playlist_interativo(self, playlist: Playlist, inicio: int = 0):
+        if not playlist.itens:
+            print("Playlist está vazia.")
+            return
+
+        if inicio < 0 or inicio >= len(playlist.itens):
+            print("Índice inicial inválido para a playlist.")
+            return
+
+        indice = inicio
+        total_itens = len(playlist.itens)
+        concluida = True
+
+        while 0 <= indice < total_itens:
+            midia_atual = playlist.itens[indice]
+            finalizou, acao = playlist.usuario.ouvir_midia(
+                midia_atual,
+                mostrar_opcao_voltar=True,
+            )
+            self.salvar_dados()
+            if not finalizou:
+                if acao == "0" or acao is None:
+                    concluida = False
+                    break
+                if acao == "1":
+                    if indice < total_itens - 1:
+                        indice += 1
+                        continue
+                    print("Fim da playlist.")
+                    break
+                if acao == "2":
+                    if indice > 0:
+                        indice -= 1
+                        continue
+                    print("Essa já é a primeira mídia da playlist.")
+                    concluida = False
+                    break
+
+            # reprodução foi até o fim sem ação imediata; pedir próximo passo
+            if total_itens == 1:
+                print("0. Voltar")
+                proxima = self._solicitar_acao("Selecione uma opção: ", {"0"}, padrao="0")
+                if proxima == "0":
+                    concluida = False
+                break
+
+            while True:
+                padrao = "1" if indice < total_itens - 1 else "0"
+                print("0. Voltar")
+                print("1. Próxima")
+                print("2. Anterior")
+                proxima = self._solicitar_acao(
+                    "Selecione uma opção: ",
+                    {"0", "1", "2"},
+                    padrao=padrao,
+                )
+
+                if proxima == "0":
+                    concluida = False
+                    indice = total_itens
+                    break
+                if proxima == "1":
+                    if indice < total_itens - 1:
+                        indice += 1
+                        break
+                    print("Fim da playlist.")
+                    indice = total_itens
+                    break
+                if proxima == "2":
+                    if indice > 0:
+                        indice -= 1
+                        break
+                    print("Essa já é a primeira mídia da playlist.")
+
+            if indice >= total_itens or not concluida:
+                break
+
+        if concluida:
+            playlist.reproducoes += 1
+            print(f"--- Fim da reprodução da playlist: {playlist.nome} ---")
+
     def menu_principal(self):
         while True:
             print("\n=== MENU PRINCIPAL ===")
@@ -503,8 +594,10 @@ class Menu:
                                 break
 
                     if midia:
-                        usuario.ouvir_midia(midia)
+                        finalizou, _ = usuario.ouvir_midia(midia)
                         self.salvar_dados()
+                        if finalizou:
+                            self._solicitar_acao("Selecione uma opção: ", {"0"}, padrao="0")
                         break
                     else:
                         print("Mídia não encontrada.")
@@ -618,8 +711,8 @@ class Menu:
                             print("Mídia não encontrada na playlist.")
                             continue
 
-                        if playlist_selecionada.reproduzir_a_partir(indice_inicial):
-                            self.salvar_dados()
+                        self._reproduzir_playlist_interativo(playlist_selecionada, indice_inicial)
+                        self.salvar_dados()
                         break
             
             elif escolha == "5":
@@ -650,7 +743,10 @@ class Menu:
                             break
 
                 if playlist_encontrada:
-                    playlist_encontrada.reproduzir()
+                    if not playlist_encontrada.itens:
+                        print("Playlist está vazia.")
+                        continue
+                    self._reproduzir_playlist_interativo(playlist_encontrada, 0)
                     self.salvar_dados()
                 else:
                     print("Playlist não encontrada.")

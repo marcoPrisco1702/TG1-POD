@@ -18,15 +18,15 @@
 
 ## Musicas
 # Formato: titulo | artista | duracao_em_segundos | genero | reproducoes
-- Thunderstruck | AC/DC | 292 | Rock | 3
-- One | Metallica | 446 | Metal | 1
+- Thunderstruck | AC/DC | 292 | Rock | 20
+- One | Metallica | 446 | Metal | 4
 - Billie Jean | Michael Jackson | 294 | Pop | 1
 - Smells Like Teen Spirit | Nirvana | 301 | Grunge | 0
-- Bohemian Rhapsody | Queen | 355 | Rock | 1
+- Bohemian Rhapsody | Queen | 355 | Rock | 2
 - Shape of You | Ed Sheeran | 234 | Pop | 1
 - Rolling in the Deep | Adele | 228 | Pop | 0
-- Hotel California | Eagles | 390 | Rock | 1
-- Stairway to Heaven | Led Zeppelin | 482 | Rock | 1
+- Hotel California | Eagles | 390 | Rock | 2
+- Stairway to Heaven | Led Zeppelin | 482 | Rock | 2
 - Sweet Child O' Mine | Guns N' Roses | 356 | Rock | 0
 - Lose Yourself | Eminem | 326 | Hip-Hop | 0
 - Blinding Lights | The Weeknd | 200 | Synth-pop | 1
@@ -35,7 +35,7 @@
 - Dancing Queen | ABBA | 230 | Disco | 0
 - Wonderwall | Oasis | 258 | Britpop | 0
 - Enter Sandman | Metallica | 331 | Metal | 3
-- Back In Black | AC/DC | 255 | Rock | 1
+- Back In Black | AC/DC | 255 | Rock | 4
 - Imagine | John Lennon | 187 | Pop | 1
 - Hey Jude | The Beatles | 431 | Rock | 0
 
@@ -49,7 +49,7 @@
 
 ## Playlists
 # Formato: nome_da_playlist | usuario_dono | titulos_de_midias_separados_por_ponto_e_virgula | reproducoes
-- Rock Classico | Marco | Thunderstruck; One; Back In Black; Bohemian Rhapsody; Stairway to Heaven; Hotel California | 1
+- Rock Classico | Marco | Thunderstruck; One; Back In Black; Bohemian Rhapsody; Stairway to Heaven; Hotel California | 2
 - Mix Pop | Ruanan | Billie Jean; Shape of You; Blinding Lights; Uptown Funk; Imagine | 1
 - Hits 90s | Beatriz | Smells Like Teen Spirit; Wonderwall; Dancing Queen; Hey Jude | 0
 - Metal Pesado | Carlos | One; Enter Sandman; Back In Black | 0
