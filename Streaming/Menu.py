@@ -314,8 +314,9 @@ class Menu:
             print("\n=== MENU PRINCIPAL ===")
             print("1. Entrar como usuário existente")
             print("2. Criar novo usuário")
-            print("3. Gerar relatório")
-            print("4. Sair")
+            print("3. Listar usuários existentes")
+            print("4. Gerar relatório")
+            print("5. Sair")
 
             escolha = input("Escolha uma opção: ")
 
@@ -338,9 +339,17 @@ class Menu:
                     self.salvar_dados()
 
             elif escolha == "3":
-                self.gerar_relatorio()
+                if not self.usuarios:
+                    print("Nenhum usuário cadastrado.")
+                else:
+                    print("\n--- Usuários cadastrados ---")
+                    for idx, usuario in enumerate(self.usuarios, start=1):
+                        print(f"{idx}. {usuario.nome}")
 
             elif escolha == "4":
+                self.gerar_relatorio()
+
+            elif escolha == "5":
                 print("Saindo do sistema...")
                 self.salvar_dados()
                 break
@@ -365,13 +374,58 @@ class Menu:
             escolha = input("Escolha uma opção: ")
 
             if escolha == "1":
-                titulo = input("Digite o título da mídia: ")
-                midia = self.encontrar_midia(titulo)
-                if midia:
-                    usuario.ouvir_midia(midia)
-                    self.salvar_dados()
-                else:
-                    print("Mídia não encontrada.")
+                while True:
+                    print("\n--- Selecionar tipo de mídia ---")
+                    print("1. Música")
+                    print("2. Podcast")
+                    print("0. Voltar")
+                    tipo = input("Escolha uma opção: ").strip()
+
+                    if tipo == "0":
+                        break
+                    elif tipo == "1":
+                        midias_filtradas = [m for m in self.midias if isinstance(m, Musica)]
+                        etiqueta = "Músicas"
+                    elif tipo == "2":
+                        midias_filtradas = [p for p in self.midias if isinstance(p, Podcast)]
+                        etiqueta = "Podcasts"
+                    else:
+                        print("Opção inválida.")
+                        continue
+
+                    if not midias_filtradas:
+                        print(f"Não há {etiqueta.lower()} cadastrados.")
+                        continue
+
+                    print(f"\n--- {etiqueta} disponíveis ---")
+                    for idx, mid in enumerate(midias_filtradas, start=1):
+                        if isinstance(mid, Musica):
+                            info = f"{mid.titulo} — {mid.artista} ({mid.genero})"
+                        else:
+                            info = f"{mid.titulo} — {mid.host}"
+                        print(f"{idx}. {info} [{mid.reproducoes} reproduções]")
+
+                    escolha_midia = input("Digite o número ou nome da mídia (ou 0 para voltar): ").strip()
+                    if escolha_midia == "0":
+                        continue
+
+                    midia = None
+                    if escolha_midia.isdigit():
+                        indice = int(escolha_midia)
+                        if 1 <= indice <= len(midias_filtradas):
+                            midia = midias_filtradas[indice - 1]
+                    else:
+                        for mid in midias_filtradas:
+                            if mid.titulo.lower() == escolha_midia.lower():
+                                midia = mid
+                                break
+
+                    if midia:
+                        usuario.ouvir_midia(midia)
+                        self.salvar_dados()
+                        break
+                    else:
+                        print("Mídia não encontrada.")
 
             elif escolha == "2":
                 print("\n--- Listagem de Mídias ---")
