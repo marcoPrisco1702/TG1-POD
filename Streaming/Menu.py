@@ -404,12 +404,32 @@ class Menu:
                     print(f"- {p}")
 
             elif escolha == "5":
-                nome_playlist = input("Digite o nome da playlist para reproduzir: ")
+                todas_playlists = []
+                for u in self.usuarios:
+                    for playlist in u.playlists:
+                        todas_playlists.append((playlist, u))
+
+                if not todas_playlists:
+                    print("Nenhuma playlist cadastrada no sistema.")
+                    continue
+
+                print("\n--- Playlists disponíveis ---")
+                for idx, (pl, dono) in enumerate(todas_playlists, start=1):
+                    print(f"{idx}. {pl.nome} (de {dono.nome}) - {len(pl.itens)} itens, {pl.reproducoes} reproduções")
+
+                escolha_playlist = input("Digite o número ou nome da playlist para reproduzir: ").strip()
                 playlist_encontrada = None
-                for p in usuario.playlists:
-                    if p.nome.lower() == nome_playlist.lower():
-                        playlist_encontrada = p
-                        break
+
+                if escolha_playlist.isdigit():
+                    indice = int(escolha_playlist)
+                    if 1 <= indice <= len(todas_playlists):
+                        playlist_encontrada = todas_playlists[indice - 1][0]
+                else:
+                    for pl, _ in todas_playlists:
+                        if pl.nome.lower() == escolha_playlist.lower():
+                            playlist_encontrada = pl
+                            break
+
                 if playlist_encontrada:
                     playlist_encontrada.reproduzir()
                     self.salvar_dados()

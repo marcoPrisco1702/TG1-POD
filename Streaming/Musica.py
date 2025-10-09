@@ -10,9 +10,7 @@ class Musica(ArquivoDeMidia):
         self.avaliacoes: list[int] = []
 
     def reproduzir(self) -> None:
-        # imprime título, artista e duração (mm:ss) e incrementa reproduções
         super().reproduzir()
-        # só complementa com info específica de música
         print(f"Gênero: {self.genero}")
 
     def avaliar(self, nota: int) -> bool:
