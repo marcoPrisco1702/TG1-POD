@@ -37,6 +37,21 @@ class Playlist:
         self.reproducoes += 1
         print(f"--- Fim da playlist: {self.nome} ---")
 
+    def reproduzir_a_partir(self, indice_inicial: int):
+        if not self.itens:
+            print("Playlist está vazia.")
+            return False
+        if indice_inicial < 0 or indice_inicial >= len(self.itens):
+            print("Índice inválido para reprodução.")
+            return False
+
+        print(f"\n--- Reproduzindo playlist: {self.nome} (a partir de {self.itens[indice_inicial].titulo}) ---")
+        for item in self.itens[indice_inicial:]:
+            self.usuario.ouvir_midia(item)
+        self.reproducoes += 1
+        print(f"--- Fim da playlist: {self.nome} ---")
+        return True
+
     def __add__(self, other):
         if not isinstance(other, Playlist):
             return NotImplemented

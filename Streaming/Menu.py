@@ -559,12 +559,69 @@ class Menu:
                     self.salvar_dados()
             
             elif escolha == "4":
-                print(f"\n--- Playlists de {usuario.nome} ---")
                 if not usuario.playlists:
                     print("Você ainda não tem playlists.")
-                for p in usuario.playlists:
-                    print(f"- {p}")
+                    continue
 
+                while True:
+                    print(f"\n--- Playlists de {usuario.nome} ---")
+                    print("0. Voltar")
+                    for idx, pl in enumerate(usuario.playlists, start=1):
+                        print(f"{idx}. {pl}")
+
+                    escolha_playlist = input("Selecione uma playlist: ").strip()
+                    if escolha_playlist == "0":
+                        break
+
+                    playlist_selecionada = None
+                    if escolha_playlist.isdigit():
+                        indice = int(escolha_playlist)
+                        if 1 <= indice <= len(usuario.playlists):
+                            playlist_selecionada = usuario.playlists[indice - 1]
+                    else:
+                        for pl in usuario.playlists:
+                            if pl.nome.lower() == escolha_playlist.lower():
+                                playlist_selecionada = pl
+                                break
+
+                    if not playlist_selecionada:
+                        print("Playlist não encontrada.")
+                        continue
+
+                    if not playlist_selecionada.itens:
+                        print("Playlist está vazia.")
+                        continue
+
+                    while True:
+                        print(f"\n--- Itens de '{playlist_selecionada.nome}' ---")
+                        print("0. Voltar")
+                        for idx, mid in enumerate(playlist_selecionada.itens, start=1):
+                            tipo = "Música" if isinstance(mid, Musica) else "Podcast"
+                            print(f"{idx}. [{tipo}] {mid}")
+
+                        escolha_item = input("Escolha por onde iniciar a reprodução: ").strip()
+                        if escolha_item == "0":
+                            break
+
+                        indice_inicial = None
+                        if escolha_item.isdigit():
+                            idx_item = int(escolha_item)
+                            if 1 <= idx_item <= len(playlist_selecionada.itens):
+                                indice_inicial = idx_item - 1
+                        else:
+                            for idx_m, mid in enumerate(playlist_selecionada.itens):
+                                if mid.titulo.lower() == escolha_item.lower():
+                                    indice_inicial = idx_m
+                                    break
+
+                        if indice_inicial is None:
+                            print("Mídia não encontrada na playlist.")
+                            continue
+
+                        if playlist_selecionada.reproduzir_a_partir(indice_inicial):
+                            self.salvar_dados()
+                        break
+            
             elif escolha == "5":
                 todas_playlists = self._obter_playlists_disponiveis()
 
