@@ -443,10 +443,13 @@ class Menu:
                     continue
 
                 print("\n--- Playlists disponíveis ---")
+                print("0. Voltar")
                 for idx, (pl, dono) in enumerate(todas_playlists, start=1):
                     print(f"{idx}. {pl.nome} (de {dono.nome}) - {len(pl.itens)} itens, {pl.reproducoes} reproduções")
 
                 escolha_playlist = input("Digite o número ou nome da playlist para reproduzir: ").strip()
+                if escolha_playlist == "0":
+                    continue
                 playlist_encontrada = None
 
                 if escolha_playlist.isdigit():
