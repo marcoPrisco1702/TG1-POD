@@ -16,6 +16,7 @@ class Menu:
         self.LOG_FOLDER = "Logs"
         self.REPORT_FOLDER = "Relatorios"
         self.CONFIG_FOLDER = "config"
+        self.config_path = os.path.join(self.CONFIG_FOLDER, "dados.md")
 
         self.setup_folders()
         self.carregar_dados()
@@ -98,14 +99,13 @@ class Menu:
         """Carrega usuários, músicas, podcasts e playlists do arquivo Markdown em config/dados.md."""
         if self.dados_carregados:
             return  # evita recarregar se já carregado
-        config_path = os.path.join(self.CONFIG_FOLDER, "dados.md")
-        if not os.path.exists(config_path):
-            print(f"[aviso] Arquivo de configuração não encontrado: {config_path}")
+        if not os.path.exists(self.config_path):
+            print(f"[aviso] Arquivo de configuração não encontrado: {self.config_path}")
             return
 
         secao = None  # 'usuarios' | 'musicas' | 'podcasts' | 'playlists'
         try:
-            with open(config_path, "r", encoding="utf-8") as f:
+            with open(self.config_path, "r", encoding="utf-8") as f:
                 for raw in f:
                     linha = raw.strip()
                     if not linha:
@@ -139,41 +139,71 @@ class Menu:
                             self.log_erro(f"Usuário duplicado no arquivo de config: '{nome}'")
 
                     elif secao == "musicas":
-                        # titulo | artista | duracao_em_segundos | genero
+                        # titulo | artista | duracao_em_segundos | genero | reproducoes?
                         partes = [p.strip() for p in conteudo.split("|")]
-                        if len(partes) != 4:
+                        if len(partes) < 4:
                             self.log_erro(f"Formato inválido para música: '{conteudo}'")
                             continue
-                        titulo, artista, dur_str, genero = partes
+                        titulo, artista, dur_str, genero = partes[:4]
+                        reproducoes = 0
+                        if len(partes) >= 5:
+                            rep_str = partes[4]
+                            try:
+                                reproducoes = int(rep_str)
+                                if reproducoes < 0:
+                                    raise ValueError
+                            except ValueError:
+                                self.log_erro(f"Reproduções inválidas em música: '{conteudo}'")
+                                reproducoes = 0
                         try:
                             duracao = int(dur_str)
                         except ValueError:
                             self.log_erro(f"Duração inválida em música: '{conteudo}'")
                             continue
-                        self.midias.append(Musica(titulo, duracao, artista, genero))
+                        self.midias.append(Musica(titulo, duracao, artista, genero, reproducoes=reproducoes))
 
                     elif secao == "podcasts":
-                        # titulo | artista | duracao_em_segundos | temporada | episodio | host
+                        # titulo | artista | duracao_em_segundos | temporada | episodio | host | reproducoes?
                         partes = [p.strip() for p in conteudo.split("|")]
-                        if len(partes) != 6:
+                        if len(partes) < 6:
                             self.log_erro(f"Formato inválido para podcast: '{conteudo}'")
                             continue
-                        titulo, artista, dur_str, temporada, ep_str, host = partes
+                        titulo, artista, dur_str, temporada, ep_str, host = partes[:6]
+                        reproducoes = 0
+                        if len(partes) >= 7:
+                            rep_str = partes[6]
+                            try:
+                                reproducoes = int(rep_str)
+                                if reproducoes < 0:
+                                    raise ValueError
+                            except ValueError:
+                                self.log_erro(f"Reproduções inválidas em podcast: '{conteudo}'")
+                                reproducoes = 0
                         try:
                             duracao = int(dur_str)
                             episodio = int(ep_str)
                         except ValueError:
                             self.log_erro(f"Duração/Episódio inválidos em podcast: '{conteudo}'")
                             continue
-                        self.midias.append(Podcast(titulo, duracao, artista, episodio, temporada, host))
+                        self.midias.append(Podcast(titulo, duracao, artista, episodio, temporada, host, reproducoes=reproducoes))
 
                     elif secao == "playlists":
-                        # nome_da_playlist | usuario_dono | titulos_de_midias_separados_por_ponto_e_virgula
+                        # nome_da_playlist | usuario_dono | titulos_de_midias_separados_por_ponto_e_virgula | reproducoes?
                         partes = [p.strip() for p in conteudo.split("|")]
-                        if len(partes) != 3:
+                        if len(partes) < 3:
                             self.log_erro(f"Formato inválido para playlist: '{conteudo}'")
                             continue
-                        nome_pl, dono, itens = partes
+                        nome_pl, dono, itens = partes[:3]
+                        reproducoes = 0
+                        if len(partes) >= 4:
+                            rep_str = partes[3]
+                            try:
+                                reproducoes = int(rep_str)
+                                if reproducoes < 0:
+                                    raise ValueError
+                            except ValueError:
+                                self.log_erro(f"Reproduções inválidas em playlist: '{conteudo}'")
+                                reproducoes = 0
 
                         usuario = self.encontrar_usuario(dono)
                         if not usuario:
@@ -182,7 +212,7 @@ class Menu:
                             usuario = Usuario(dono)
                             self.usuarios.append(usuario)
 
-                        pl = usuario.criar_playlist(nome_pl)
+                        pl = usuario.criar_playlist(nome_pl, reproducoes=reproducoes)
                         # títulos separados por ';'
                         titulos = [t.strip() for t in itens.split(";") if t.strip()]
                         for t in titulos:
@@ -191,12 +221,94 @@ class Menu:
                                 pl.adicionar_midia(midia)
                             else:
                                 self.log_erro(f"Mídia '{t}' não encontrada ao montar playlist '{nome_pl}'.")
-            print(f"[ok] Config carregada de {config_path}")
+            print(f"[ok] Config carregada de {self.config_path}")
             self.dados_carregados = True
+            self.salvar_dados()
         except Exception as e:
-            self.log_erro(f"Falha ao ler config '{config_path}': {e}")
-            print(f"[erro] Não foi possível ler {config_path}. Veja Logs/erros.log.")
-        
+            self.log_erro(f"Falha ao ler config '{self.config_path}': {e}")
+            print(f"[erro] Não foi possível ler {self.config_path}. Veja Logs/erros.log.")
+
+    def salvar_dados(self):
+        """Persiste o estado atual no arquivo de configuração Markdown."""
+        if not self.dados_carregados:
+            return
+
+        os.makedirs(self.CONFIG_FOLDER, exist_ok=True)
+
+        linhas = [
+            "# Configuração do Sistema de Streaming",
+            "",
+            "> Preencha as seções abaixo. Uma linha por item.",
+            "> Use **UTF-8** e mantenha o formato exato (campos separados por `|`).",
+            "",
+            "## Usuarios",
+        ]
+
+        for usuario in self.usuarios:
+            linhas.append(f"- {usuario.nome}")
+
+        linhas.append("")
+        linhas.extend(
+            [
+                "## Musicas",
+                "# Formato: titulo | artista | duracao_em_segundos | genero | reproducoes",
+            ]
+        )
+
+        musicas = [m for m in self.midias if isinstance(m, Musica)]
+        for musica in musicas:
+            linhas.append(
+                f"- {musica.titulo} | {musica.artista} | {musica.duracao} | {musica.genero} | {musica.reproducoes}"
+            )
+
+        linhas.append("")
+        linhas.extend(
+            [
+                "## Podcasts",
+                "# Formato: titulo | artista (produtor) | duracao_em_segundos | temporada | episodio | host | reproducoes",
+            ]
+        )
+
+        podcasts = [p for p in self.midias if isinstance(p, Podcast)]
+        for podcast in podcasts:
+            linhas.append(
+                f"- {podcast.titulo} | {podcast.artista} | {podcast.duracao} | {podcast.temporada} | {podcast.episodio} | {podcast.host} | {podcast.reproducoes}"
+            )
+
+        linhas.append("")
+        linhas.extend(
+            [
+                "## Playlists",
+                "# Formato: nome_da_playlist | usuario_dono | titulos_de_midias_separados_por_ponto_e_virgula | reproducoes",
+            ]
+        )
+
+        playlists = []
+        for usuario in self.usuarios:
+            playlists.extend(usuario.playlists)
+
+        for playlist in playlists:
+            itens = "; ".join(item.titulo for item in playlist.itens)
+            linhas.append(
+                f"- {playlist.nome} | {playlist.usuario.nome} | {itens} | {playlist.reproducoes}"
+            )
+
+        linhas.append("")
+
+        conteudo = "\n".join(linhas) + "\n"
+        temp_path = f"{self.config_path}.tmp"
+        try:
+            with open(temp_path, "w", encoding="utf-8") as temp:
+                temp.write(conteudo)
+            os.replace(temp_path, self.config_path)
+        except Exception as e:
+            self.log_erro(f"Falha ao salvar config '{self.config_path}': {e}")
+            if os.path.exists(temp_path):
+                try:
+                    os.remove(temp_path)
+                except OSError:
+                    pass
+
     def menu_principal(self):
         while True:
             print("\n=== MENU PRINCIPAL ===")
@@ -223,12 +335,14 @@ class Menu:
                     novo_usuario = Usuario(nome)
                     self.usuarios.append(novo_usuario)
                     print(f"Usuário '{nome}' criado com sucesso!")
+                    self.salvar_dados()
 
             elif escolha == "3":
                 self.gerar_relatorio()
 
             elif escolha == "4":
                 print("Saindo do sistema...")
+                self.salvar_dados()
                 break
 
             else:
@@ -254,6 +368,7 @@ class Menu:
                 midia = self.encontrar_midia(titulo)
                 if midia:
                     usuario.ouvir_midia(midia)
+                    self.salvar_dados()
                 else:
                     print("Mídia não encontrada.")
 
@@ -278,6 +393,7 @@ class Menu:
                         else:
                             print("Mídia não encontrada.")
                     print(f"Playlist '{nome_playlist}' criada!")
+                    self.salvar_dados()
             
             elif escolha == "4":
                 print(f"\n--- Playlists de {usuario.nome} ---")
@@ -295,6 +411,7 @@ class Menu:
                         break
                 if playlist_encontrada:
                     playlist_encontrada.reproduzir()
+                    self.salvar_dados()
                 else:
                     print("Playlist não encontrada.")
 
@@ -316,11 +433,7 @@ class Menu:
 
             elif escolha == "7":
                 print("Saindo do perfil...")
+                self.salvar_dados()
                 break
             else:
                 print("Opção inválida.")        
-
-
-
-
-

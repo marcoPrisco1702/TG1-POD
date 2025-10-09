@@ -6,11 +6,11 @@ if TYPE_CHECKING:
     from .Usuario import Usuario
 
 class Playlist:
-    def __init__(self, nome: str, usuario: 'Usuario'):
+    def __init__(self, nome: str, usuario: 'Usuario', reproducoes: int = 0):
         self.nome = nome
         self.usuario = usuario
         self.itens: List[ArquivoDeMidia] = []
-        self.reproducoes = 0
+        self.reproducoes = max(int(reproducoes), 0)
 
     def adicionar_midia(self, midia: ArquivoDeMidia):
         if midia not in self.itens:
@@ -41,9 +41,12 @@ class Playlist:
         if not isinstance(other, Playlist):
             return NotImplemented
         
-        nova_playlist = Playlist(f"{self.nome} + {other.nome}", self.usuario)
+        nova_playlist = Playlist(
+            f"{self.nome} + {other.nome}",
+            self.usuario,
+            reproducoes=self.reproducoes + other.reproducoes,
+        )
         nova_playlist.itens = self.itens + other.itens
-        nova_playlist.reproducoes = self.reproducoes + other.reproducoes
         return nova_playlist
 
     def __len__(self):

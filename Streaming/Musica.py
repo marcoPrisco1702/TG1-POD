@@ -2,8 +2,8 @@ from .ArquivoDeMidia import ArquivoDeMidia
 import logging
 
 class Musica(ArquivoDeMidia):
-    def __init__(self, titulo: str, duracao: int, artista: str, genero: str):
-        super().__init__(titulo, duracao, artista)
+    def __init__(self, titulo: str, duracao: int, artista: str, genero: str, reproducoes: int = 0):
+        super().__init__(titulo, duracao, artista, reproducoes=reproducoes)
         if not genero or not genero.strip():
             raise ValueError("genero é obrigatório")
         self.genero: str = genero

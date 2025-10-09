@@ -4,8 +4,17 @@ from .ArquivoDeMidia import ArquivoDeMidia
 
 class Podcast(ArquivoDeMidia):
 
-    def __init__(self,titulo: str,duracao: int,artista: str,episodio: int,temporada: str,host: str, ):
-        super().__init__(titulo, duracao, artista)
+    def __init__(
+        self,
+        titulo: str,
+        duracao: int,
+        artista: str,
+        episodio: int,
+        temporada: str,
+        host: str,
+        reproducoes: int = 0,
+    ):
+        super().__init__(titulo, duracao, artista, reproducoes=reproducoes)
 
         # checagens pra validacao de atributos
         if not isinstance(episodio, int) or episodio < 1:

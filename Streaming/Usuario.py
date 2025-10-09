@@ -19,9 +19,9 @@ class Usuario:
         midia.reproduzir()
         self.historico.append(midia)
 
-    def criar_playlist(self, nome_playlist: str) -> 'Playlist':
+    def criar_playlist(self, nome_playlist: str, reproducoes: int = 0) -> 'Playlist':
         from .Playlist import Playlist
-        nova_playlist = Playlist(nome_playlist, self)
+        nova_playlist = Playlist(nome_playlist, self, reproducoes=reproducoes)
         self.playlists.append(nova_playlist)
         return nova_playlist
 
