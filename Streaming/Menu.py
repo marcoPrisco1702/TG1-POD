@@ -309,16 +309,98 @@ class Menu:
                 except OSError:
                     pass
 
+    def _obter_playlists_disponiveis(self, excluir=None):
+        playlists = []
+        for usuario in self.usuarios:
+            for playlist in usuario.playlists:
+                if excluir and playlist is excluir:
+                    continue
+                playlists.append((playlist, usuario))
+        return playlists
+
+    def _adicionar_midias_manual(self, playlist: Playlist):
+        while True:
+            titulo_midia = input("Digite o título da mídia para adicionar (ou '0' para finalizar): ").strip()
+            if titulo_midia == "0":
+                break
+            midia = self.encontrar_midia(titulo_midia)
+            if midia:
+                playlist.adicionar_midia(midia)
+                self.salvar_dados()
+            else:
+                print("Mídia não encontrada.")
+
+    def _concatenar_playlist(self, playlist_destino: Playlist):
+        playlists_disponiveis = self._obter_playlists_disponiveis(excluir=playlist_destino)
+        if not playlists_disponiveis:
+            print("Não há outras playlists disponíveis para concatenar.")
+            return
+
+        print("\n--- Playlists disponíveis para concatenar ---")
+        print("0. Cancelar")
+        for idx, (plist, dono) in enumerate(playlists_disponiveis, start=1):
+            print(f"{idx}. {plist.nome} (de {dono.nome}) - {len(plist.itens)} itens")
+
+        escolha = input("Digite o número ou nome da playlist: ").strip()
+        if escolha == "0":
+            return
+
+        playlist_origem = None
+        if escolha.isdigit():
+            indice = int(escolha)
+            if 1 <= indice <= len(playlists_disponiveis):
+                playlist_origem = playlists_disponiveis[indice - 1][0]
+        else:
+            for pl, _ in playlists_disponiveis:
+                if pl.nome.lower() == escolha.lower():
+                    playlist_origem = pl
+                    break
+
+        if not playlist_origem:
+            print("Playlist não encontrada para concatenação.")
+            return
+
+        if not playlist_origem.itens:
+            print("Playlist de origem está vazia.")
+            return
+
+        for item in playlist_origem.itens:
+            playlist_destino.adicionar_midia(item)
+        print(f"Playlist '{playlist_origem.nome}' concatenada em '{playlist_destino.nome}'.")
+        self.salvar_dados()
+
+    def _menu_edicao_playlist(self, playlist: Playlist):
+        while True:
+            print(f"\n--- Gerenciar playlist '{playlist.nome}' ---")
+            print("1. Adicionar mídia individualmente")
+            print("2. Concatenar outra playlist")
+            print("0. Finalizar edição")
+            escolha = input("Escolha uma opção: ").strip()
+
+            if escolha == "0":
+                break
+            elif escolha == "1":
+                self._adicionar_midias_manual(playlist)
+            elif escolha == "2":
+                self._concatenar_playlist(playlist)
+            else:
+                print("Opção inválida.")
+
     def menu_principal(self):
         while True:
             print("\n=== MENU PRINCIPAL ===")
+            print("0. Sair")
             print("1. Entrar como usuário existente")
             print("2. Criar novo usuário")
             print("3. Listar usuários existentes")
             print("4. Gerar relatório")
-            print("5. Sair")
 
             escolha = input("Escolha uma opção: ")
+
+            if escolha == "0":
+                print("Saindo do sistema...")
+                self.salvar_dados()
+                break
 
             if escolha == "1":
                 nome = input("Digite o nome do usuário: ")
@@ -349,11 +431,6 @@ class Menu:
             elif escolha == "4":
                 self.gerar_relatorio()
 
-            elif escolha == "5":
-                print("Saindo do sistema...")
-                self.salvar_dados()
-                break
-
             else:
                 print("Opção inválida. Tente novamente.")
 
@@ -362,6 +439,7 @@ class Menu:
         """Exibe e gerencia o menu do usuário logado."""
         while True:
             print(f"\n--- Menu de {usuario.nome} ---")
+            print("0. Voltar ao menu principal")
             print("1. Reproduzir uma mídia")
             print("2. Listar mídias")
             print("3. Criar nova playlist")
@@ -369,9 +447,13 @@ class Menu:
             print("5. Reproduzir uma playlist")
             print("6. Adicionar mídia a uma playlist")
             print("7. Avaliar uma música")
-            print("8. Sair (Voltar ao menu principal)")
             
             escolha = input("Escolha uma opção: ")
+
+            if escolha == "0":
+                print("Saindo do perfil...")
+                self.salvar_dados()
+                break
 
             if escolha == "1":
                 while True:
@@ -429,11 +511,14 @@ class Menu:
 
             elif escolha == "2":
                 print("\n--- Listagem de Mídias ---")
+                print("0. Voltar")
                 print("1. Listar músicas")
                 print("2. Listar podcasts")
                 print("3. Listar todas")
                 sub_escolha = input("Escolha uma opção: ").strip()
 
+                if sub_escolha == "0":
+                    continue
                 if sub_escolha == "1":
                     musicas = [m for m in self.midias if isinstance(m, Musica)]
                     if musicas:
@@ -462,21 +547,15 @@ class Menu:
                     print("Opção inválida.")
                 
             elif escolha == "3":
-                nome_playlist = input("Digite o nome da nova playlist: ")
+                nome_playlist = input("Digite o nome da nova playlist (ou '0' para cancelar): ").strip()
+                if nome_playlist == "0":
+                    continue
                 if any(p.nome.lower() == nome_playlist.lower() for p in usuario.playlists):
                     print("Você já possui uma playlist com esse nome.")
                 else:
                     playlist = usuario.criar_playlist(nome_playlist)
-                    while True:
-                        titulo_midia = input("Adicione uma mídia (ou 'fim' para terminar): ")
-                        if titulo_midia.lower() == 'fim':
-                            break
-                        midia = self.encontrar_midia(titulo_midia)
-                        if midia:
-                            playlist.adicionar_midia(midia)
-                        else:
-                            print("Mídia não encontrada.")
                     print(f"Playlist '{nome_playlist}' criada!")
+                    self._menu_edicao_playlist(playlist)
                     self.salvar_dados()
             
             elif escolha == "4":
@@ -487,10 +566,7 @@ class Menu:
                     print(f"- {p}")
 
             elif escolha == "5":
-                todas_playlists = []
-                for u in self.usuarios:
-                    for playlist in u.playlists:
-                        todas_playlists.append((playlist, u))
+                todas_playlists = self._obter_playlists_disponiveis()
 
                 if not todas_playlists:
                     print("Nenhuma playlist cadastrada no sistema.")
@@ -501,7 +577,7 @@ class Menu:
                 for idx, (pl, dono) in enumerate(todas_playlists, start=1):
                     print(f"{idx}. {pl.nome} (de {dono.nome}) - {len(pl.itens)} itens, {pl.reproducoes} reproduções")
 
-                escolha_playlist = input("Digite o número ou nome da playlist para reproduzir: ").strip()
+                escolha_playlist = input("Digite o número ou nome da playlist para reproduzir ela (ou 0 pra voltar) ").strip()
                 if escolha_playlist == "0":
                     continue
                 playlist_encontrada = None
@@ -532,12 +608,7 @@ class Menu:
                 if not playlist_encontrada:
                     print("Playlist não encontrada.")
                     continue
-                titulo_midia = input("Digite o título da mídia para adicionar: ")
-                midia = self.encontrar_midia(titulo_midia)
-                if not midia:
-                    print("Mídia não encontrada.")
-                    continue
-                playlist_encontrada.adicionar_midia(midia)
+                self._menu_edicao_playlist(playlist_encontrada)
                 self.salvar_dados()
 
             elif escolha == "7":
@@ -556,9 +627,5 @@ class Menu:
                 else:
                     print("Música não encontrada.")
 
-            elif escolha == "8":
-                print("Saindo do perfil...")
-                self.salvar_dados()
-                break
             else:
                 print("Opção inválida.")        
