@@ -19,9 +19,8 @@ class Podcast(ArquivoDeMidia):
         self.temporada = temporada
         self.host = host
 
-    def reproduzir(self):
-        self.reproducoes += 1
-        print(f"Reproduzindo Podcast: {self.titulo} — {self.artista} ")
+    def reproduzir(self) -> None:
+        super().reproduzir()
         print(f"Temporada: {self.temporada} | Episódio: {self.episodio} | Host: {self.host}")
 
     
