@@ -374,9 +374,38 @@ class Menu:
                     print("Mídia não encontrada.")
 
             elif escolha == "2":
-                print("\n--- Todas as Mídias ---")
-                for midia in self.midias:
-                    print(f"- {midia}")
+                print("\n--- Listagem de Mídias ---")
+                print("1. Listar músicas")
+                print("2. Listar podcasts")
+                print("3. Listar todas")
+                sub_escolha = input("Escolha uma opção: ").strip()
+
+                if sub_escolha == "1":
+                    musicas = [m for m in self.midias if isinstance(m, Musica)]
+                    if musicas:
+                        print("\n--- Músicas ---")
+                        for musica in musicas:
+                            print(f"- {musica} ({musica.reproducoes} reproduções)")
+                    else:
+                        print("Nenhuma música cadastrada.")
+                elif sub_escolha == "2":
+                    podcasts = [p for p in self.midias if isinstance(p, Podcast)]
+                    if podcasts:
+                        print("\n--- Podcasts ---")
+                        for podcast in podcasts:
+                            print(f"- {podcast.titulo} — {podcast.host} ({podcast.reproducoes} reproduções)")
+                    else:
+                        print("Nenhum podcast cadastrado.")
+                elif sub_escolha == "3":
+                    if not self.midias:
+                        print("Nenhuma mídia cadastrada.")
+                    else:
+                        print("\n--- Todas as Mídias ---")
+                        for midia in self.midias:
+                            etiqueta = "Música" if isinstance(midia, Musica) else "Podcast"
+                            print(f"- [{etiqueta}] {midia}")
+                else:
+                    print("Opção inválida.")
                 
             elif escolha == "3":
                 nome_playlist = input("Digite o nome da nova playlist: ")
