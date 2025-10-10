@@ -7,6 +7,14 @@ from .Playlist import Playlist
 from .Usuario import Usuario
 
 class Analises:
+    """
+    Fornece um conjunto de métodos estáticos para realizar análises
+    e gerar relatórios a partir dos dados do sistema de streaming.
+
+    Esta classe não deve ser instanciada, pois todos os seus métodos
+    operam de forma independente, recebendo os dados necessários como
+    parâmetros.
+    """
     @staticmethod
     
     def top_musicas_reproduzidas(musicas: List[Musica], top_n: int) -> List[Musica]:

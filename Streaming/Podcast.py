@@ -3,7 +3,21 @@ from .ArquivoDeMidia import ArquivoDeMidia
 
 
 class Podcast(ArquivoDeMidia):
+    """
+    Representa um arquivo de mídia do tipo podcast.
 
+    Herda de ArquivoDeMidia e adiciona atributos específicos de podcasts,
+    como episódio, temporada e apresentador (host).
+
+    Attributes:
+        titulo (str): O título do episódio do podcast.
+        duracao (int): A duração em segundos.
+        artista (str): O produtor ou criador do podcast.
+        episodio (int): O número do episódio.
+        temporada (str): A identificação da temporada.
+        host (str): O nome do apresentador principal.
+        reproducoes (int): O número de vezes que o podcast foi reproduzido.
+    """
     def __init__(self,titulo: str, duracao: int, artista: str, episodio: int, temporada: str, host: str, reproducoes: int = 0,):
         super().__init__(titulo, duracao, artista, reproducoes=reproducoes)
 
@@ -23,8 +37,6 @@ class Podcast(ArquivoDeMidia):
         super().reproduzir()
         print(f"Temporada: {self.temporada} | Episódio: {self.episodio} | Host: {self.host}")
 
-    
-    
     def __str__(self):
         return (f"Podcast('{self.titulo}' — {self.artista}, T{self.temporada}E{self.episodio}, "
             f"{self._fmt_duracao()}, {self.reproducoes}x)")

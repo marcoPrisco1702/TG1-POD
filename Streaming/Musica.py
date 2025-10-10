@@ -3,15 +3,21 @@ from .ArquivoDeMidia import ArquivoDeMidia
 import logging
 
 class Musica(ArquivoDeMidia):
-    def __init__(
-        self,
-        titulo: str,
-        duracao: int,
-        artista: str,
-        genero: str,
-        reproducoes: int = 0,
-        avaliacoes: Optional[Iterable[int]] = None,
-    ):
+    """
+    Representa um arquivo de mídia do tipo música.
+
+    Herda de ArquivoDeMidia e adiciona atributos específicos de músicas,
+    como gênero e uma lista de avaliações.
+
+    Attributes:
+        titulo (str): O título da música.
+        duracao (int): A duração em segundos.
+        artista (str): O artista ou banda.
+        genero (str): O gênero musical da faixa.
+        reproducoes (int): O número de vezes que a música foi reproduzida.
+        avaliacoes (List[int]): Uma lista de notas (0 a 5) que a música recebeu.
+    """
+    def __init__(self, titulo: str, duracao: int, artista: str, genero: str, reproducoes: int = 0, avaliacoes: Optional[Iterable[int]] = None,):
         super().__init__(titulo, duracao, artista, reproducoes=reproducoes)
         if not genero or not genero.strip():
             raise ValueError("genero é obrigatório")

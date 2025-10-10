@@ -1,6 +1,19 @@
 from abc import ABC, abstractmethod
 
 class ArquivoDeMidia(ABC):
+    """
+    Classe base abstrata que representa um item de mídia ficticio.
+
+    Define os atributos e comportamentos de todos os tipos de mídia,
+    como músicas e podcasts, incluindo título, duração, artista e número
+    de reproduções.
+
+    Atributos:
+        titulo (str): O título da mídia.
+        duracao (int): A duração da mídia em segundos.
+        artista (str): O nome do artista, banda ou produtor.
+        reproducoes (int): O número de vezes que a mídia foi reproduzida.
+    """
     # classe abstrata que representa um arquivo de mídia genérico
     def __init__(self, titulo: str, duracao: int, artista: str, reproducoes: int = 0):
         #checagens pra validacao dos atributos

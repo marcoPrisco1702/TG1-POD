@@ -18,6 +18,19 @@ if TYPE_CHECKING:
     from .Playlist import Playlist
 
 class Usuario:
+    """
+    Representa um usuário do sistema de streaming.
+
+    Cada usuário possui um nome, uma lista de playlists e um histórico
+    de mídias ouvidas.
+
+    Attributes:
+        nome (str): O nome do usuário.
+        playlists (List[Playlist]): A lista de playlists criadas pelo usuário.
+        historico (List[ArquivoDeMidia]): A lista de mídias que o usuário ouviu.
+        qntd_instancias (int): Atributo de classe que conta o número total de
+                               usuários criados.
+    """
     qntd_instancias = 0
 
     def __init__(self, nome: str, total_midias_ouvidas: int = 0):
@@ -31,7 +44,7 @@ class Usuario:
         self.total_midias_ouvidas = max(total, 0)
         Usuario.qntd_instancias += 1
 
-    def ouvir_midia(self,midia: 'ArquivoDeMidia',aguardar: bool = True,mostrar_opcao_voltar: bool = True,) -> bool:
+    def ouvir_midia(self, midia: 'ArquivoDeMidia', aguardar: bool = True, mostrar_opcao_voltar: bool = True):
         print(f"\n{self.nome} está ouvindo:")
         midia.reproduzir()
         resultado = True
@@ -48,11 +61,7 @@ class Usuario:
         self.total_midias_ouvidas += 1
         return resultado, acao
 
-    def _executar_temporizador(
-            self,duracao: int
-            ,mostrar_opcao_voltar: bool,
-        mostrar_controles_playlist: bool = False,
-    ) -> Tuple[bool, Optional[str]]:
+    def _executar_temporizador(self, duracao: int, mostrar_opcao_voltar: bool, mostrar_controles_playlist: bool = False):
         if duracao <= 0:
             print("Tempo restante:    0s")
             if mostrar_opcao_voltar:
@@ -84,12 +93,7 @@ class Usuario:
                 print("0. Voltar")
         return True, None
 
-    def _temporizador_interativo(
-        self,
-        duracao: int,
-        mostrar_opcao: bool,
-        mostrar_controles_playlist: bool,
-    ) -> Tuple[bool, Optional[str]]:
+    def _temporizador_interativo(self, duracao: int, mostrar_opcao: bool, mostrar_controles_playlist: bool):
         fd = sys.stdin.fileno()
         try:
             old_settings = termios.tcgetattr(fd)
@@ -164,11 +168,7 @@ class Usuario:
             termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
 
     @staticmethod
-    def _atualizar_display(
-        restantes: int,
-        mostrar_opcao: bool,
-        mostrar_controles_playlist: bool,
-    ):
+    def _atualizar_display(restantes: int, mostrar_opcao: bool, mostrar_controles_playlist: bool):
         linhas = 2 if mostrar_opcao else 1
         if mostrar_opcao and mostrar_controles_playlist:
             linhas = 4
@@ -190,10 +190,7 @@ class Usuario:
         sys.stdout.flush()
 
     @staticmethod
-    def _limpar_linha_temporizador(
-        mostrar_opcao: bool,
-        mostrar_controles_playlist: bool,
-    ):
+    def _limpar_linha_temporizador(mostrar_opcao: bool, mostrar_controles_playlist: bool):
         linhas = 2 if mostrar_opcao else 1
         if mostrar_opcao and mostrar_controles_playlist:
             linhas = 4
@@ -210,7 +207,7 @@ class Usuario:
         sys.stdout.write("\033[%dB" % linhas)
         sys.stdout.flush()
 
-    def criar_playlist(self, nome_playlist: str, reproducoes: int = 0) -> 'Playlist':
+    def criar_playlist(self, nome_playlist: str, reproducoes: int = 0):
         from .Playlist import Playlist
         nova_playlist = Playlist(nome_playlist, self, reproducoes=reproducoes)
         self.playlists.append(nova_playlist)

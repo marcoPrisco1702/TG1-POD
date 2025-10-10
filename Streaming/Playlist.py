@@ -6,6 +6,19 @@ if TYPE_CHECKING:
     from .Usuario import Usuario
 
 class Playlist:
+    """
+    Representa uma lista de reprodução de mídias de um usuário.
+
+    Uma playlist pertence a um usuário e contém uma lista ordenada de
+    arquivos de mídia (músicas ou podcasts).
+
+    Attributes:
+        nome (str): O nome da playlist.
+        usuario (Usuario): A instância do usuário que é dono da playlist.
+        itens (List[ArquivoDeMidia]): A lista de mídias contidas na playlist.
+        reproducoes (int): O número de vezes que a playlist foi reproduzida
+                           por completo.
+    """
     def __init__(self, nome: str, usuario: 'Usuario', reproducoes: int = 0):
         self.nome = nome
         self.usuario = usuario

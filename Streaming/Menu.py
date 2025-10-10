@@ -9,6 +9,20 @@ from Streaming.Analises import Analises
 
 #classe menu pra gerenciar o sistema
 class Menu:
+    """
+    Gerencia a interface de usuário e o fluxo principal do sistema de streaming.
+
+    Esta classe é responsável por carregar os dados iniciais do sistema,
+    exibir menus, processar as entradas do usuário e coordenar as ações,
+    como reproduzir mídias, gerenciar playlists e gerar relatórios.
+
+    Attributes:
+        usuarios (List[Usuario]): Lista de todos os usuários cadastrados no sistema.
+        midias (List[ArquivoDeMidia]): Lista de todas as mídias (músicas e podcasts)
+                                      cadastradas.
+        dados_carregados (bool): Flag que indica se os dados do arquivo de
+                                 configuração já foram carregados.
+    """
     def __init__(self):
         self.usuarios = []
         self.midias = []
