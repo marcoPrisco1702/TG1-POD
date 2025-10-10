@@ -1,12 +1,12 @@
 # Configuração do Sistema de Streaming
 
-> Preencha as seções abaixo. Uma linha por item.
-> Use **UTF-8** e mantenha o formato exato (campos separados por `|`).
+> 
+> 
 
 ## Usuarios
 # Formato: nome | total_midias_ouvidas
 - Marco | 12
-- Ruanan | 8
+- Ruanan | 9
 - Joao | 0
 - Beatriz | 0
 - Carlos | 0
@@ -17,10 +17,12 @@
 - Helena | 0
 - Marcos | 0
 - UsuarioTeste | 2
+- OutroUsuario | 0
+- UsuarioTeste2 | 0
 
 ## Musicas
 # Formato: titulo | artista | duracao_em_segundos | genero | reproducoes | avaliacoes (opcional; notas 0-5 separadas por ';')
-- Thunderstruck | AC/DC | 292 | Rock | 37 | 5
+- Thunderstruck | AC/DC | 292 | Rock | 38 | 5
 - One | Metallica | 446 | Metal | 6
 - Billie Jean | Michael Jackson | 294 | Pop | 2
 - Smells Like Teen Spirit | Nirvana | 301 | Grunge | 0

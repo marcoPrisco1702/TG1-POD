@@ -296,8 +296,8 @@ class Menu:
         linhas = [
             "# Configuração do Sistema de Streaming",
             "",
-            "> Preencha as seções abaixo. Uma linha por item.",
-            "> Use **UTF-8** e mantenha o formato exato (campos separados por `|`).",
+            "> ",
+            "> ",
             "",
             "## Usuarios",
             "# Formato: nome | total_midias_ouvidas",
