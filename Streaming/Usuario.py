@@ -11,7 +11,7 @@ try:
     import tty
     import select
     HAS_TERMIOS = True
-except ImportError:  # pragma: no cover
+except ImportError: 
     termios = tty = select = None
     HAS_TERMIOS = False
 if TYPE_CHECKING:
@@ -20,18 +20,18 @@ if TYPE_CHECKING:
 class Usuario:
     qntd_instancias = 0
 
-    def __init__(self, nome: str):
+    def __init__(self, nome: str, total_midias_ouvidas: int = 0):
         self.nome = nome
         self.playlists: List['Playlist'] = []
         self.historico: List['ArquivoDeMidia'] = []
+        try:
+            total = int(total_midias_ouvidas)
+        except (TypeError, ValueError):
+            total = 0
+        self.total_midias_ouvidas = max(total, 0)
         Usuario.qntd_instancias += 1
 
-    def ouvir_midia(
-        self,
-        midia: 'ArquivoDeMidia',
-        aguardar: bool = True,
-        mostrar_opcao_voltar: bool = True,
-    ) -> bool:
+    def ouvir_midia(self,midia: 'ArquivoDeMidia',aguardar: bool = True,mostrar_opcao_voltar: bool = True,) -> bool:
         print(f"\n{self.nome} está ouvindo:")
         midia.reproduzir()
         resultado = True
@@ -45,12 +45,12 @@ class Usuario:
             if resultado:
                 print()
         self.historico.append(midia)
+        self.total_midias_ouvidas += 1
         return resultado, acao
 
     def _executar_temporizador(
-        self,
-        duracao: int,
-        mostrar_opcao_voltar: bool,
+            self,duracao: int
+            ,mostrar_opcao_voltar: bool,
         mostrar_controles_playlist: bool = False,
     ) -> Tuple[bool, Optional[str]]:
         if duracao <= 0:

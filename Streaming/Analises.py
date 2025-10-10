@@ -8,6 +8,7 @@ from .Usuario import Usuario
 
 class Analises:
     @staticmethod
+    
     def top_musicas_reproduzidas(musicas: List[Musica], top_n: int) -> List[Musica]:
         if not musicas or top_n <= 0:
             return []
@@ -24,7 +25,10 @@ class Analises:
     def usuario_mais_ativo(usuarios: List[Usuario]):
         if not usuarios:
             return None
-        return max(usuarios, key=lambda usuario: len(usuario.historico)) # usuario com mais midias ouvidas
+        return max(
+            usuarios,
+            key=lambda usuario: getattr(usuario, "total_midias_ouvidas", len(usuario.historico)),
+        ) # usuario com mais midias ouvidas
 
     @staticmethod
     def media_avaliacoes(musicas: List[Musica]) -> Dict[str, float]:
@@ -38,7 +42,7 @@ class Analises:
     def total_reproducoes(usuarios: List[Usuario]):
         if not usuarios:
             return 0
-        return sum(len(u.historico) for u in usuarios)
+        return sum(getattr(u, "total_midias_ouvidas", len(u.historico)) for u in usuarios)
 
     @staticmethod
     def gerar_relatorio(usuarios: List[Usuario],playlists: List[Playlist],musicas: List[Musica],caminho_pasta_relat: str = os.path.join("relatorios"),nome_arquivo: str = "relatorio.txt",top_n: int = 5,):
@@ -85,7 +89,7 @@ class Analises:
         linhas.append("Usuário mais ativo:")
         if mais_ativo is not None:
             linhas.append(
-                f"  {mais_ativo.nome} — {len(mais_ativo.historico)} mídias ouvidas"
+                f"  {mais_ativo.nome} — {getattr(mais_ativo, 'total_midias_ouvidas', len(mais_ativo.historico))} mídias ouvidas"
             )
         else:
             linhas.append("  (nenhum usuário disponível)")

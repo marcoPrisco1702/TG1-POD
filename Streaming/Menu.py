@@ -69,7 +69,8 @@ class Menu:
 
             f.write("--- Usuário Mais Ativo ---\n")
             if user_ativo:
-                f.write(f"{user_ativo.nome} com {len(user_ativo.historico)} mídias ouvidas.\n\n")
+                total_ouvidas = getattr(user_ativo, "total_midias_ouvidas", len(user_ativo.historico))
+                f.write(f"{user_ativo.nome} com {total_ouvidas} mídias ouvidas.\n\n")
             else:
                 f.write("Nenhum usuário ativo.\n\n")
 
@@ -133,9 +134,24 @@ class Menu:
                     conteudo = linha[2:].strip()
 
                     if secao == "usuarios":
-                        nome = conteudo
+                        partes_usuario = [p.strip() for p in conteudo.split("|")]
+                        if not partes_usuario:
+                            continue
+                        nome = partes_usuario[0]
+                        total_ouvidas = 0
+                        if len(partes_usuario) >= 2:
+                            total_str = partes_usuario[1]
+                            try:
+                                total_ouvidas = int(total_str)
+                                if total_ouvidas < 0:
+                                    raise ValueError
+                            except ValueError:
+                                self.log_erro(
+                                    f"Total de mídias ouvidas inválido para usuário '{nome}': '{total_str}'"
+                                )
+                                total_ouvidas = 0
                         if not self.encontrar_usuario(nome):
-                            self.usuarios.append(Usuario(nome))
+                            self.usuarios.append(Usuario(nome, total_midias_ouvidas=total_ouvidas))
                         else:
                             self.log_erro(f"Usuário duplicado no arquivo de config: '{nome}'")
 
@@ -147,6 +163,7 @@ class Menu:
                             continue
                         titulo, artista, dur_str, genero = partes[:4]
                         reproducoes = 0
+                        avaliacoes = []
                         if len(partes) >= 5:
                             rep_str = partes[4]
                             try:
@@ -156,12 +173,38 @@ class Menu:
                             except ValueError:
                                 self.log_erro(f"Reproduções inválidas em música: '{conteudo}'")
                                 reproducoes = 0
+                        if len(partes) >= 6:
+                            avaliacoes_raw = partes[5]
+                            notas = [nota.strip() for nota in avaliacoes_raw.split(";") if nota.strip()]
+                            for nota in notas:
+                                try:
+                                    nota_int = int(nota)
+                                except ValueError:
+                                    self.log_erro(
+                                        f"Avaliação inválida ('{nota}') em música: '{conteudo}'"
+                                    )
+                                    continue
+                                if 0 <= nota_int <= 5:
+                                    avaliacoes.append(nota_int)
+                                else:
+                                    self.log_erro(
+                                        f"Avaliação fora do intervalo ('{nota_int}') em música: '{conteudo}'"
+                                    )
                         try:
                             duracao = int(dur_str)
                         except ValueError:
                             self.log_erro(f"Duração inválida em música: '{conteudo}'")
                             continue
-                        self.midias.append(Musica(titulo, duracao, artista, genero, reproducoes=reproducoes))
+                        self.midias.append(
+                            Musica(
+                                titulo,
+                                duracao,
+                                artista,
+                                genero,
+                                reproducoes=reproducoes,
+                                avaliacoes=avaliacoes or None,
+                            )
+                        )
 
                     elif secao == "podcasts":
                         # titulo | artista | duracao_em_segundos | temporada | episodio | host | reproducoes?
@@ -243,24 +286,32 @@ class Menu:
             "> Use **UTF-8** e mantenha o formato exato (campos separados por `|`).",
             "",
             "## Usuarios",
+            "# Formato: nome | total_midias_ouvidas",
         ]
 
         for usuario in self.usuarios:
-            linhas.append(f"- {usuario.nome}")
+            linhas.append(f"- {usuario.nome} | {getattr(usuario, 'total_midias_ouvidas', 0)}")
 
         linhas.append("")
         linhas.extend(
             [
                 "## Musicas",
-                "# Formato: titulo | artista | duracao_em_segundos | genero | reproducoes",
+                "# Formato: titulo | artista | duracao_em_segundos | genero | reproducoes | avaliacoes (opcional; notas 0-5 separadas por ';')",
             ]
         )
 
         musicas = [m for m in self.midias if isinstance(m, Musica)]
         for musica in musicas:
-            linhas.append(
-                f"- {musica.titulo} | {musica.artista} | {musica.duracao} | {musica.genero} | {musica.reproducoes}"
-            )
+            avaliacoes = getattr(musica, "avaliacoes", [])
+            if avaliacoes:
+                avaliacoes_str = ";".join(str(nota) for nota in avaliacoes)
+                linhas.append(
+                    f"- {musica.titulo} | {musica.artista} | {musica.duracao} | {musica.genero} | {musica.reproducoes} | {avaliacoes_str}"
+                )
+            else:
+                linhas.append(
+                    f"- {musica.titulo} | {musica.artista} | {musica.duracao} | {musica.genero} | {musica.reproducoes}"
+                )
 
         linhas.append("")
         linhas.extend(
@@ -775,6 +826,7 @@ class Menu:
                             self.log_erro(f"Tentativa de avaliação inválida ({nota}) para '{midia.titulo}'.")
                         else:
                             print("Avaliação registrada!")
+                            self.salvar_dados()
                     except ValueError:
                         print("Por favor, insira um número.")
                 else:

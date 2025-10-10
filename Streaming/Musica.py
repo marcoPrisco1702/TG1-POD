@@ -1,13 +1,33 @@
+from typing import Iterable, Optional
 from .ArquivoDeMidia import ArquivoDeMidia
 import logging
 
 class Musica(ArquivoDeMidia):
-    def __init__(self, titulo: str, duracao: int, artista: str, genero: str, reproducoes: int = 0):
+    def __init__(
+        self,
+        titulo: str,
+        duracao: int,
+        artista: str,
+        genero: str,
+        reproducoes: int = 0,
+        avaliacoes: Optional[Iterable[int]] = None,
+    ):
         super().__init__(titulo, duracao, artista, reproducoes=reproducoes)
         if not genero or not genero.strip():
             raise ValueError("genero é obrigatório")
         self.genero: str = genero
         self.avaliacoes: list[int] = []
+        if avaliacoes is not None:
+            for nota in avaliacoes:
+                try:
+                    nota_int = int(nota)
+                except (TypeError, ValueError):
+                    logging.error(f"Nota inválida ({nota}) carregada para {self.titulo} - {self.artista}")
+                    continue
+                if 0 <= nota_int <= 5:
+                    self.avaliacoes.append(nota_int)
+                else:
+                    logging.error(f"Nota fora do intervalo ({nota_int}) carregada para {self.titulo} - {self.artista}")
 
     def reproduzir(self) -> None:
         super().reproduzir()
