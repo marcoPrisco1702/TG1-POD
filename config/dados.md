@@ -5,8 +5,8 @@
 
 ## Usuarios
 # Formato: nome | total_midias_ouvidas
-- Marco | 7
-- Ruanan | 2
+- Marco | 12
+- Ruanan | 8
 - Joao | 0
 - Beatriz | 0
 - Carlos | 0
@@ -20,40 +20,41 @@
 
 ## Musicas
 # Formato: titulo | artista | duracao_em_segundos | genero | reproducoes | avaliacoes (opcional; notas 0-5 separadas por ';')
-- Thunderstruck | AC/DC | 292 | Rock | 35 | 5
+- Thunderstruck | AC/DC | 292 | Rock | 37 | 5
 - One | Metallica | 446 | Metal | 6
-- Billie Jean | Michael Jackson | 294 | Pop | 1
+- Billie Jean | Michael Jackson | 294 | Pop | 2
 - Smells Like Teen Spirit | Nirvana | 301 | Grunge | 0
 - Bohemian Rhapsody | Queen | 355 | Rock | 3
-- Shape of You | Ed Sheeran | 234 | Pop | 1
+- Shape of You | Ed Sheeran | 234 | Pop | 2
 - Rolling in the Deep | Adele | 228 | Pop | 0
 - Hotel California | Eagles | 390 | Rock | 3
-- Stairway to Heaven | Led Zeppelin | 482 | Rock | 3
+- Stairway to Heaven | Led Zeppelin | 482 | Rock | 4
 - Sweet Child O' Mine | Guns N' Roses | 356 | Rock | 0
 - Lose Yourself | Eminem | 326 | Hip-Hop | 0 | 1;4;2
-- Blinding Lights | The Weeknd | 200 | Synth-pop | 1
-- Despacito | Luis Fonsi | 229 | Reggaeton | 0
-- Uptown Funk | Mark Ronson ft. Bruno Mars | 270 | Funk | 1
+- Blinding Lights | The Weeknd | 200 | Synth-pop | 2 | 0;5
+- Despacito | Luis Fonsi | 229 | Reggaeton | 0 | 3
+- Uptown Funk | Mark Ronson ft. Bruno Mars | 270 | Funk | 2
 - Dancing Queen | ABBA | 230 | Disco | 0
 - Wonderwall | Oasis | 258 | Britpop | 0
 - Enter Sandman | Metallica | 331 | Metal | 3
 - Back In Black | AC/DC | 255 | Rock | 5
-- Imagine | John Lennon | 187 | Pop | 1
+- Imagine | John Lennon | 187 | Pop | 3
 - Hey Jude | The Beatles | 431 | Rock | 0
 
 ## Podcasts
 # Formato: titulo | artista (produtor) | duracao_em_segundos | temporada | episodio | host | reproducoes
 - Ciência Hoje | Revista ABC | 1800 | 1 | 10 | Dr. Silva | 1
 - TechTalk | DevLab | 2400 | 2 | 5 | Maria Souza | 0
-- História em Pauta | Canal História | 2100 | 1 | 12 | Prof. Almeida | 0
+- História em Pauta | Canal História | 2100 | 1 | 12 | Prof. Almeida | 1
 - Finanças Simples | InvesteBem | 1800 | 3 | 2 | Carla Ribeiro | 0
-- Saúde em Dia | Vida+ | 1500 | 1 | 8 | Dra. Paula | 0
+- Saúde em Dia | Vida+ | 1500 | 1 | 8 | Dra. Paula | 1
 
 ## Playlists
 # Formato: nome_da_playlist | usuario_dono | titulos_de_midias_separados_por_ponto_e_virgula | reproducoes
 - Rock Classico | Marco | Thunderstruck; One; Back In Black; Bohemian Rhapsody; Stairway to Heaven; Hotel California | 3
 - Teste | Marco | Thunderstruck; One; Back In Black; Bohemian Rhapsody; Stairway to Heaven; Hotel California; Billie Jean; Shape of You; Blinding Lights; Uptown Funk; Imagine | 0
-- Mix Pop | Ruanan | Billie Jean; Shape of You; Blinding Lights; Uptown Funk; Imagine | 1
+- Teste2 | Marco | História em Pauta; Saúde em Dia; Imagine; Thunderstruck | 1
+- Mix Pop | Ruanan | Billie Jean; Shape of You; Blinding Lights; Uptown Funk; Imagine | 2
 - Hits 90s | Beatriz | Smells Like Teen Spirit; Wonderwall; Dancing Queen; Hey Jude | 0
 - Metal Pesado | Carlos | One; Enter Sandman; Back In Black | 0
 - Papo de Tecnologia | Eduardo | TechTalk; Ciência Hoje | 0
